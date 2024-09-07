@@ -1,4 +1,5 @@
 import { Search, PenSquare, LayoutGrid, List, Trash } from "lucide-react";
+import { LocalNote } from "../types";
 
 const NoteItem = ({ title, date, image }) => (
     <div className="flex items-center justify-between py-2 px-4 hover:bg-gray-100 dark:hover:bg-gray-800">
@@ -16,7 +17,42 @@ interface NoteItemProps {
     image?: string;
 }
 
+function loadDummyNOtes(): LocalNote[] {
+    return [
+        {
+            id: "1",
+            fullpath: "/notes/1",
+            createdAt: "2023-01-01",
+            updatedAt: "2023-01-01",
+            title: "Meeting Notes",
+            date: "2023-01-01",
+            image: "https://picsum.photos/200/300?random=1",
+        },
+        {
+            id: "2",
+            fullpath: "/notes/2",
+            createdAt: "2023-01-01",
+            updatedAt: "2023-01-01",
+            title: "Project Ideas",
+            date: "2023-01-01",
+            image: "https://picsum.photos/200/300?random=2",
+        },
+        {
+            id: "3",
+            fullpath: "/notes/3",
+            createdAt: "2023-01-01",
+            updatedAt: "2023-01-01",
+            title: "Travel Plans",
+            date: "2023-01-01",
+            image: "https://picsum.photos/200/300?random=3",
+        },
+    ];
+}
+
+
+
 const NotesList = () => {
+    const notes = loadDummyNOtes();
     return (
         <div className="w-80 h-full bg-white dark:bg-gray-900 border-r border-gray-200 dark:border-gray-700">
             <div className="p-4 border-b border-gray-200 dark:border-gray-700">
@@ -39,10 +75,9 @@ const NotesList = () => {
             </div>
             <div className="overflow-y-auto h-[calc(100%-6rem)]">
                 <div className="py-2 px-4 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase">2023</div>
-                <NoteItem title="Meeting Notes" date="Edited 2 days ago" image="https://picsum.photos/200/300?random=1" />
-                <NoteItem title="Project Ideas" date="Edited 1 week ago" image="https://picsum.photos/200/300?random=2" />
-                <NoteItem title="Travel Plans" date="Edited 2 weeks ago" image="https://picsum.photos/200/300?random=3" />
-                {/* Add more NoteItems as needed */}
+                {notes.map((note) => (
+                    <NoteItem key={note.id} title={note.title} date={note.date} image={note.image} />
+                ))}
             </div>
         </div>
     );
