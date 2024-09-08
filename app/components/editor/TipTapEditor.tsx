@@ -23,11 +23,9 @@ import { WelcomeText } from './WelcomeText';
 import { useAtom, useSetAtom } from 'jotai';
 import { editorAtom } from '@/app/atoms';
 
-
 import { uploadAndInsertImage, insertImageUrl } from './actions';
 
 import { Libre_Baskerville, JetBrains_Mono } from 'next/font/google';
-import { toast } from 'sonner'
 
 const libreBaskerville = Libre_Baskerville({
     weight: ['400', '700'],
@@ -41,7 +39,13 @@ const jetBrainsMono = JetBrains_Mono({
     display: 'swap',
 });
 
-const TipTapEditor = ({ editable = true, initialContent = null, font = 'serif' }) => {
+interface TipTapEditorProps {
+    editable?: boolean;
+    initialContent?: string | null;
+    onUpdate?: (content: string) => void;
+}
+
+const TipTapEditor = ({ editable = true, initialContent = null, onUpdate = (content: string) => { } }: TipTapEditorProps) => {
     const [_, setEditor] = useAtom(editorAtom);
 
     const editor = useTiptapEditor({
@@ -54,7 +58,7 @@ const TipTapEditor = ({ editable = true, initialContent = null, font = 'serif' }
                 className: 'focus',
             }),
             CharacterCount,
-            NextImage,
+            Image,
             Link,
             TaskList,
             TaskItem.configure({
@@ -68,7 +72,7 @@ const TipTapEditor = ({ editable = true, initialContent = null, font = 'serif' }
         content: initialContent,
         editorProps: {
             attributes: {
-                class: `font-body h-full pb-10 min-h-[400px] focus:outline-none`,
+                class: `h-full pb-10 min-h-[400px] focus:outline-none`,
             },
         },
         editable: editable,
@@ -80,15 +84,13 @@ const TipTapEditor = ({ editable = true, initialContent = null, font = 'serif' }
         }
     }, [editor, initialContent]);
 
-    const updateContent = useSetAtom(updateContentAtom);
-
     useEffect(() => {
         if (editor) {
             setEditor(editor); // Set the editor in the context when it's created
 
             const handleUpdate = () => {
                 const content = editor.getHTML();
-                updateContent(content);
+                onUpdate(content);
             };
 
             editor.on('update', handleUpdate);
