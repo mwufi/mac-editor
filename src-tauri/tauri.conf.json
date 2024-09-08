@@ -12,7 +12,36 @@
   },
   "tauri": {
     "allowlist": {
-      "all": false
+      "path": {
+        "all": true
+      },
+      "dialog": {
+        "all": true,
+        "ask": true,
+        "confirm": true,
+        "message": true,
+        "open": true,
+        "save": true
+      },
+      "fs": {
+        "all": true,
+        "scope": [
+          "$APPDATA",
+          "$APPDATA/*",
+          "$HOME",
+          "$DESKTOP",
+          "$DESKTOP/*"
+        ],
+        "readFile": true,
+        "writeFile": true,
+        "readDir": true,
+        "copyFile": true,
+        "createDir": true,
+        "removeDir": true,
+        "removeFile": true,
+        "renameFile": true,
+        "exists": true
+      }
     },
     "bundle": {
       "active": true,
@@ -56,10 +85,10 @@
     "windows": [
       {
         "fullscreen": false,
-        "height": 600,
+        "height": 700,
         "resizable": true,
         "title": "Wordy",
-        "width": 800
+        "width": 1400
       }
     ]
   }

@@ -10,3 +10,36 @@ export interface LocalNote {
     date: string;
     image?: string;
 }
+
+export interface Note {
+    id: string;
+    content: string;
+    title: string;
+    image?: string;
+
+    updatedAt: Date;
+    createdAt: Date;
+    versions: Version[];
+    parent_folder: Folder;
+}
+
+export interface Version {
+    id: string;
+    note_id: string;
+    content: string;
+    author: Author;
+    updatedAt: Date;
+    createdAt: Date;
+}
+
+export interface Folder {
+    id: string;
+    name: string;
+    notes: Note[];
+}
+
+export interface Author {
+    id: string;
+    name: string;
+    email: string;
+}

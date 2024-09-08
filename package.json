@@ -15,6 +15,7 @@
     "@radix-ui/react-slot": "^1.1.0",
     "@radix-ui/react-toggle": "^1.1.0",
     "@radix-ui/react-toggle-group": "^1.1.0",
+    "@tauri-apps/api": "^1.6.0",
     "@tiptap/extension-character-count": "^2.6.6",
     "@tiptap/extension-focus": "^2.6.6",
     "@tiptap/extension-font-family": "^2.6.6",
