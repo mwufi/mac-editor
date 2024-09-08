@@ -28,6 +28,7 @@
         "scope": [
           "$APPDATA",
           "$APPDATA/*",
+          "$APPDATA/**/*",
           "$HOME",
           "$DESKTOP",
           "$DESKTOP/*"

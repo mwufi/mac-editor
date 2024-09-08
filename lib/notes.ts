@@ -26,16 +26,8 @@ export async function ensureDir(path: string) {
 
 import { readDir } from '@tauri-apps/api/fs';
 
-export async function listFilesInDirs() {
-    const { appDataDirPath, appConfigDirPath, desktopDirPath } = await getAppDataDir();
-
-    const appDataFiles = await readDir(appDataDirPath);
-    const appConfigFiles = await readDir(appConfigDirPath);
-    const desktopFiles = await readDir(desktopDirPath);
-
-    return {
-        appDataFiles,
-        appConfigFiles,
-        desktopFiles,
-    };
+export async function getFileTree() {
+    const appDir = await getAppDataDir();
+    const notes = await readDir(appDir.appDataDirPath + "notes", { recursive: true });
+    return notes;
 }
