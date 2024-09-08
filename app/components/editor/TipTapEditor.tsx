@@ -11,11 +11,13 @@ import Placeholder from '@tiptap/extension-placeholder';
 import Focus from '@tiptap/extension-focus';
 import TaskItem from '@tiptap/extension-task-item'
 import TaskList from '@tiptap/extension-task-list'
+import Image from '@tiptap/extension-image'
 
 // import CustomImageGallery from './CustomImageGallery';
+// import NextImage from '@/components/editor/NextImage';
+// No FileHandler for now
 import { WelcomeText } from './WelcomeText';
-import FileHandler from '@/components/editor/FileHandler'
-import NextImage from '@/components/editor/NextImage';
+
 
 
 import { useAtom, useSetAtom } from 'jotai';
@@ -61,36 +63,7 @@ const TipTapEditor = ({ editable = true, initialContent = null, font = 'serif' }
             Youtube.configure({
                 controls: false,
                 nocookie: true,
-            }),
-            FileHandler.configure({
-                allowedMimeTypes: ['image/png', 'image/jpeg', 'image/gif', 'image/webp'],
-                onDrop: (currentEditor, files, pos) => {
-                    files.forEach(async file => {
-                        uploadAndInsertImage(currentEditor, file, pos)
-                    })
-                },
-                onPaste: (currentEditor, files, htmlContent) => {
-                    if (htmlContent) {
-                        // Handle pasted HTML content
-                        const parser = new DOMParser();
-                        const doc = parser.parseFromString(htmlContent, 'text/html');
-                        const imgElement = doc.querySelector('img');
-                        console.log("pasted html content", htmlContent, imgElement)
-
-                        if (imgElement && imgElement.src) {
-                            insertImageUrl(currentEditor, imgElement.src)
-                            return true;
-                        }
-
-                        // If no image in HTML content, allow default paste behavior
-                        return false;
-                    }
-
-                    files.forEach(async file => {
-                        uploadAndInsertImage(currentEditor, file)
-                    })
-                },
-            }),
+            })
         ],
         content: initialContent,
         editorProps: {

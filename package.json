@@ -13,6 +13,7 @@
     "@radix-ui/react-slot": "^1.1.0",
     "@tiptap/extension-character-count": "^2.6.6",
     "@tiptap/extension-focus": "^2.6.6",
+    "@tiptap/extension-image": "^2.6.6",
     "@tiptap/extension-link": "^2.6.6",
     "@tiptap/extension-placeholder": "^2.6.6",
     "@tiptap/extension-task-item": "^2.6.6",
