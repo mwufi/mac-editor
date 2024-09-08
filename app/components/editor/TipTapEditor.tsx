@@ -2,7 +2,7 @@
 
 import { useEffect } from 'react';
 
-import { EditorContent, useEditor as useTiptapEditor } from '@tiptap/react';
+import { Editor, EditorContent, useEditor as useTiptapEditor } from '@tiptap/react';
 import CharacterCount from '@tiptap/extension-character-count';
 import StarterKit from '@tiptap/starter-kit'
 import Youtube from '@tiptap/extension-youtube'
@@ -12,28 +12,19 @@ import Focus from '@tiptap/extension-focus';
 import TaskItem from '@tiptap/extension-task-item'
 import TaskList from '@tiptap/extension-task-list'
 import Image from '@tiptap/extension-image'
+import FontFamily from '@tiptap/extension-font-family';
+import TextStyle from '@tiptap/extension-text-style'
+import FontSize from 'tiptap-extension-font-size'
+import Underline from '@tiptap/extension-underline'
+import TextAlign from '@tiptap/extension-text-align'
 
-// import CustomImageGallery from './CustomImageGallery';
-// import NextImage from '@/components/editor/NextImage';
-// No FileHandler for now
-import { WelcomeText } from './WelcomeText';
-
-
-
-import { useAtom, useSetAtom } from 'jotai';
+import { useAtom } from 'jotai';
 import { editorAtom } from '@/app/atoms';
 
-import { uploadAndInsertImage, insertImageUrl } from './actions';
-
 import { Libre_Baskerville, JetBrains_Mono } from 'next/font/google';
+import Toolbar from './Toolbar';
 
 const libreBaskerville = Libre_Baskerville({
-    weight: ['400', '700'],
-    subsets: ['latin'],
-    display: 'swap',
-});
-
-const jetBrainsMono = JetBrains_Mono({
     weight: ['400', '700'],
     subsets: ['latin'],
     display: 'swap',
@@ -44,6 +35,7 @@ interface TipTapEditorProps {
     initialContent?: string | null;
     onUpdate?: (content: string) => void;
 }
+
 
 const TipTapEditor = ({ editable = true, initialContent = null, onUpdate = (content: string) => { } }: TipTapEditorProps) => {
     const [_, setEditor] = useAtom(editorAtom);
@@ -60,9 +52,18 @@ const TipTapEditor = ({ editable = true, initialContent = null, onUpdate = (cont
             CharacterCount,
             Image,
             Link,
+            Underline,
+            TextAlign.configure({
+                types: ['heading', 'paragraph'],
+            }),
             TaskList,
             TaskItem.configure({
                 nested: true,
+            }),
+            FontSize,
+            TextStyle,
+            FontFamily.configure({
+                types: ['textStyle'],
             }),
             Youtube.configure({
                 controls: false,
@@ -72,7 +73,7 @@ const TipTapEditor = ({ editable = true, initialContent = null, onUpdate = (cont
         content: initialContent,
         editorProps: {
             attributes: {
-                class: `h-full pb-10 min-h-[400px] focus:outline-none`,
+                class: `${libreBaskerville.className} h-full pb-10 min-h-[400px] focus:outline-none`,
             },
         },
         editable: editable,
@@ -101,7 +102,14 @@ const TipTapEditor = ({ editable = true, initialContent = null, onUpdate = (cont
         }
     }, [editor, setEditor]);
 
-    return <div>{editor && <EditorContent editor={editor} />}</div>;
+    return <div>
+        {editor &&
+            <>
+                <Toolbar editor={editor} />
+                <EditorContent editor={editor} />
+            </>
+        }
+    </div>;
 }
 
 export default TipTapEditor

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Provider as JotaiProvider } from "jotai";
 import "./globals.css";
+import "./tiptap.css";
 
 import { Inter } from 'next/font/google';
 import { Toaster } from "sonner";

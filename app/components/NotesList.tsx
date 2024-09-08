@@ -29,6 +29,7 @@ function loadDummyNOtes(): LocalNote[] {
         {
             id: "1",
             fullpath: "/notes/1",
+            content: "<h1>Welcome to the notes app</h1><p>This is a test note</p>",
             createdAt: "2023-01-01",
             updatedAt: "2023-01-01",
             title: "Meeting Notes",
@@ -38,6 +39,7 @@ function loadDummyNOtes(): LocalNote[] {
         {
             id: "2",
             fullpath: "/notes/2",
+            content: "<h1>Project Ideas</h1><p>This is a test note</p>",
             createdAt: "2023-01-01",
             updatedAt: "2023-01-01",
             title: "Project Ideas",
@@ -47,6 +49,7 @@ function loadDummyNOtes(): LocalNote[] {
         {
             id: "3",
             fullpath: "/notes/3",
+            content: "<h1>Travel Plans</h1><p>This is a test note</p>",
             createdAt: "2023-01-01",
             updatedAt: "2023-01-01",
             title: "Travel Plans",

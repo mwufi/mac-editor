@@ -1,7 +1,8 @@
 import { toast } from "sonner";
 import { uploadImageToSupabase } from "@/app/utils/supabase";
+import { Editor } from "@tiptap/react";
 
-export async function uploadAndInsertImage(editor, file, pos = null) {
+export async function uploadAndInsertImage(editor: Editor, file: File, pos = null) {
     toast.info("Uploading image to cloud....")
     try {
         const supabasePath = await uploadImageToSupabase(file)
@@ -23,7 +24,11 @@ export async function uploadAndInsertImage(editor, file, pos = null) {
     }
 }
 
-export function insertImageUrl(editor, url) {
+export function setFont(editor: Editor, font: string) {
+    editor.chain().focus().setFontFamily(font).run()
+}
+
+export function insertImageUrl(editor: Editor, url: string) {
     editor.chain().insertContent([
         {
             type: 'nextImage',
@@ -37,7 +42,7 @@ export function insertImageUrl(editor, url) {
     ]).focus().run()
 }
 
-export const insertCustomButton = (editor, label, onClick) => {
+export const insertCustomButton = (editor: Editor, label: string, onClick: () => void) => {
     editor
         .chain()
         .focus()
@@ -55,7 +60,7 @@ export const insertCustomButton = (editor, label, onClick) => {
         .run();
 };
 
-export const insertGallery = (editor) => {
+export const insertGallery = (editor: Editor) => {
     editor
         .chain()
         .focus()
