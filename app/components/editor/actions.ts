@@ -1,5 +1,5 @@
 import { toast } from "sonner";
-import { uploadImageToSupabase } from "@/app/utils/supabase";
+import { uploadImageToSupabase } from "@/lib/supabase";
 import { Editor } from "@tiptap/react";
 
 export async function uploadAndInsertImage(editor: Editor, file: File, pos = null) {
@@ -22,10 +22,6 @@ export async function uploadAndInsertImage(editor: Editor, file: File, pos = nul
     } catch (error) {
         toast.error('Error uploading image:', error.message);
     }
-}
-
-export function setFont(editor: Editor, font: string) {
-    editor.chain().focus().setFontFamily(font).run()
 }
 
 export function insertImageUrl(editor: Editor, url: string) {

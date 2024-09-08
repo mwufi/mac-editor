@@ -5,6 +5,14 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Button } from "@/components/ui/button";
 import { Toggle } from "@/components/ui/toggle";
 import { Bold, Italic, Underline, Strikethrough, Image, AlignLeft, AlignCenter, AlignRight, Paperclip, Share } from "lucide-react";
+import { Editor } from "@tiptap/react";
+
+function getSelectionChain(editor: Editor) {
+    if (editor.state.selection.empty) {
+        return editor.chain().focus().selectParentNode();
+    }
+    return editor.chain().focus();
+}
 
 export default function Toolbar() {
     const editor = useAtomValue(editorAtom);
@@ -18,11 +26,7 @@ export default function Toolbar() {
         <div className="control-group py-2 flex flex-row gap-2 mb-4">
             <div className="button-group">
                 <Select onValueChange={(value) => {
-                    if (editor.state.selection.empty) {
-                        editor.chain().focus().selectParentNode().setFontFamily(value).run();
-                    } else {
-                        editor.chain().focus().setFontFamily(value).run();
-                    }
+                    getSelectionChain(editor).setFontFamily(value).run();
                 }}>
                     <SelectTrigger className="w-[180px]">
                         <SelectValue placeholder="Select a font" />
@@ -65,7 +69,7 @@ export default function Toolbar() {
                     onClick={() => {
                         const currentSize = parseInt(editorFontSize || '16');
                         const newSize = Math.min(72, currentSize + 1);
-                        editor.chain().focus().setFontSize(`${newSize}pt`).run();
+                        getSelectionChain(editor).setFontSize(`${newSize}pt`).run();
                     }}
                     className="h-5 w-8 flex items-center justify-center"
                 >
@@ -76,11 +80,7 @@ export default function Toolbar() {
                 <Toggle
                     pressed={editor.isActive('bold')}
                     onPressedChange={() => {
-                        if (editor.state.selection.empty) {
-                            editor.chain().focus().selectParentNode().toggleBold().run();
-                        } else {
-                            editor.chain().focus().toggleBold().run();
-                        }
+                        getSelectionChain(editor).toggleBold().run();
                     }}
                     aria-label="Toggle bold"
                 >
@@ -89,11 +89,7 @@ export default function Toolbar() {
                 <Toggle
                     pressed={editor.isActive('italic')}
                     onPressedChange={() => {
-                        if (editor.state.selection.empty) {
-                            editor.chain().focus().selectParentNode().toggleItalic().run();
-                        } else {
-                            editor.chain().focus().toggleItalic().run();
-                        }
+                        getSelectionChain(editor).toggleItalic().run();
                     }}
                     aria-label="Toggle italic"
                 >
@@ -102,11 +98,7 @@ export default function Toolbar() {
                 <Toggle
                     pressed={editor.isActive('underline')}
                     onPressedChange={() => {
-                        if (editor.state.selection.empty) {
-                            editor.chain().focus().selectParentNode().toggleUnderline().run();
-                        } else {
-                            editor.chain().focus().toggleUnderline().run();
-                        }
+                        getSelectionChain(editor).toggleUnderline().run();
                     }}
                     aria-label="Toggle underline"
                 >
@@ -115,11 +107,7 @@ export default function Toolbar() {
                 <Toggle
                     pressed={editor.isActive('strike')}
                     onPressedChange={() => {
-                        if (editor.state.selection.empty) {
-                            editor.chain().focus().selectParentNode().toggleStrike().run();
-                        } else {
-                            editor.chain().focus().toggleStrike().run();
-                        }
+                        getSelectionChain(editor).toggleStrike().run();
                     }}
                     aria-label="Toggle strikethrough"
                 >
