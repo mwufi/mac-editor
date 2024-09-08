@@ -20,7 +20,7 @@ const Sidebar = () => {
     return (
         <div className="shrink-0 w-64 h-full overflow-y-auto bg-gray-50 dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 p-4">
             <div className="space-y-2">
-                <SidebarItem icon={LayoutDashboard} label="Dashboard" href="/designer" />
+                <SidebarItem icon={LayoutDashboard} label="Dashboard" href="/test/tauri" />
                 <SidebarItem icon={Star} label="Starred" count={31} />
                 <SidebarItem icon={Archive} label="Archive" count={216} />
                 <SidebarItem icon={Trash2} label="Deleted" count={12} />

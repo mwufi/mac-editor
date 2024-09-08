@@ -4,29 +4,8 @@ import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { ensureDir, getAppDataDir, listFilesInDirs } from "@/lib/notes";
-import { toast } from "sonner";
+import { FullScreenSection, TwoColumnLayout } from "../components/Layout";
 
-import { invoke } from '@tauri-apps/api/tauri'
-
-// A full screen section. By default, the children are full height! this is great.
-export const FullScreenSection = ({ children, className, peekNext = false }: { children?: React.ReactNode, className?: string, peekNext?: boolean }) => {
-    return (
-        <div className={`relative w-full ${peekNext ? "h-[95vh]" : "h-screen"} rounded-lg overflow-hidden ${className} grid w-full h-full`}>
-            <div className="grid w-full h-full">
-                {children}
-            </div>
-        </div>
-    )
-}
-
-export const TwoColumnLayout = ({ children, className }: { children?: React.ReactNode, className?: string }) => {
-    return (
-        <div className={`grid grid-cols-1 md:grid-cols-2 ${className}`}>
-            {children}
-        </div>
-    )
-}
 
 const Hero = () => {
     return (
@@ -139,52 +118,6 @@ function ProfileAside() {
         </aside>
     )
 }
-import { save } from "@tauri-apps/api/dialog";
-import { writeTextFile } from "@tauri-apps/api/fs";
-
-function FileTest() {
-    return (
-        <div>
-            <Button onClick={async () => {
-                await ensureDir("settings");
-                console.log(await getAppDataDir());
-                console.log(await listFilesInDirs());
-            }}>Log Paths</Button>
-            <Button onClick={async () => {
-                const filepath = await save({
-                    defaultPath: "settings/test.txt",
-                    title: "Save File",
-                    filters: [{ name: "Text Files", extensions: ["txt"] }],
-                });
-                if (filepath) {
-                    await writeTextFile(filepath, "Hello World");
-                    toast.success("File saved");
-                } else {
-                    toast.error("File not saved");
-                }
-            }}>Create Test File</Button>
-            <Button onClick={async () => {
-                const filepath = "/Users/zen.tang/mac-editor/Desktop/test.txt";
-                try {
-                    await writeTextFile(filepath, "Hello World");
-                    toast.success("File saved");
-                } catch (error) {
-                    console.error(error);
-                    toast.error("File not saved", {
-                        description: error as string,
-                    });
-                }
-            }}>Open Test File</Button>
-
-            <Button onClick={async () => {
-                const result = await invoke("read_config");
-                console.log(result);
-                const parsedResult = JSON.parse(result);
-                toast.success(parsedResult.hello);
-            }}>Invoke Command</Button>
-        </div>
-    )
-}
 export default function Designer() {
     return (
         <>
@@ -227,7 +160,6 @@ export default function Designer() {
                         <h1 className="text-4xl" id="colors">Pick your colors</h1>
 
                     </div>
-                    <FileTest />
                 </TwoColumnLayout>
             </FullScreenSection>
         </>
