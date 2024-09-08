@@ -1,29 +1,31 @@
 'use client'
 
+import { useEffect } from 'react';
+
+import { EditorContent, useEditor as useTiptapEditor } from '@tiptap/react';
 import CharacterCount from '@tiptap/extension-character-count';
 import StarterKit from '@tiptap/starter-kit'
 import Youtube from '@tiptap/extension-youtube'
 import Link from '@tiptap/extension-link'
-
-import FileHandler from '@/components/editor/FileHandler'
-import NextImage from '@/components/editor/NextImage';
-
-import { EditorContent, useEditor as useTiptapEditor } from '@tiptap/react';
-import { useEditor } from './EditorContext'; // Import the custom hook
-import { useEffect } from 'react';
-
-import { Libre_Baskerville, JetBrains_Mono } from 'next/font/google';
-import { toast } from 'sonner'
-import { uploadImageToSupabase } from '@/lib/uploadImage';
-import CustomButton from './CustomButton';
-import CustomImageGallery from './CustomImageGallery';
 import Placeholder from '@tiptap/extension-placeholder';
 import Focus from '@tiptap/extension-focus';
 import TaskItem from '@tiptap/extension-task-item'
 import TaskList from '@tiptap/extension-task-list'
-import { WelcomeMessage } from '../WelcomeText';
+
+// import CustomImageGallery from './CustomImageGallery';
+import { WelcomeText } from './WelcomeText';
+import FileHandler from '@/components/editor/FileHandler'
+import NextImage from '@/components/editor/NextImage';
+
+
 import { useAtom, useSetAtom } from 'jotai';
-import { noteAtom, updateContentAtom } from './atoms';
+import { editorAtom } from '@/app/atoms';
+
+
+import { uploadAndInsertImage, insertImageUrl } from './actions';
+
+import { Libre_Baskerville, JetBrains_Mono } from 'next/font/google';
+import { toast } from 'sonner'
 
 const libreBaskerville = Libre_Baskerville({
     weight: ['400', '700'],
@@ -37,14 +39,8 @@ const jetBrainsMono = JetBrains_Mono({
     display: 'swap',
 });
 
-
-function getPos(editor) {
-    return editor.state.selection.anchor
-}
-
-
 const TipTapEditor = ({ editable = true, initialContent = null, font = 'serif' }) => {
-    const { setEditor } = useEditor(); // Use the context
+    const [_, setEditor] = useAtom(editorAtom);
 
     const editor = useTiptapEditor({
         extensions: [
@@ -58,12 +54,10 @@ const TipTapEditor = ({ editable = true, initialContent = null, font = 'serif' }
             CharacterCount,
             NextImage,
             Link,
-            CustomButton,
             TaskList,
             TaskItem.configure({
                 nested: true,
             }),
-            CustomImageGallery,
             Youtube.configure({
                 controls: false,
                 nocookie: true,

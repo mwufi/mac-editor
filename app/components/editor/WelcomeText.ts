@@ -1,0 +1,1 @@
+export const WelcomeText = `hi there`
