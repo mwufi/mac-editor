@@ -13,3 +13,23 @@
 .tiptap p {
     @apply text-lg leading-relaxed mb-1;
 }
+
+.tiptap ul {
+    @apply list-disc pl-4;
+}
+
+.tiptap ol {
+    @apply list-decimal pl-4;
+}
+
+.tiptap li {
+    @apply mb-1;
+}
+
+.tiptap a {
+    @apply text-blue-400 hover:text-blue-500 cursor-pointer;
+}
+
+.tiptap img {
+    @apply mb-1;
+}

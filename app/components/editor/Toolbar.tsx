@@ -17,7 +17,13 @@ export default function Toolbar() {
     return (
         <div className="control-group py-2 flex flex-row gap-2 mb-4">
             <div className="button-group">
-                <Select onValueChange={(value) => editor.chain().focus().setFontFamily(value).run()}>
+                <Select onValueChange={(value) => {
+                    if (editor.state.selection.empty) {
+                        editor.chain().focus().selectParentNode().setFontFamily(value).run();
+                    } else {
+                        editor.chain().focus().setFontFamily(value).run();
+                    }
+                }}>
                     <SelectTrigger className="w-[180px]">
                         <SelectValue placeholder="Select a font" />
                     </SelectTrigger>
@@ -69,28 +75,52 @@ export default function Toolbar() {
             <div className="flex items-center border p-1 rounded-md">
                 <Toggle
                     pressed={editor.isActive('bold')}
-                    onPressedChange={() => editor.chain().focus().toggleBold().run()}
+                    onPressedChange={() => {
+                        if (editor.state.selection.empty) {
+                            editor.chain().focus().selectParentNode().toggleBold().run();
+                        } else {
+                            editor.chain().focus().toggleBold().run();
+                        }
+                    }}
                     aria-label="Toggle bold"
                 >
                     <Bold className="h-4 w-4" />
                 </Toggle>
                 <Toggle
                     pressed={editor.isActive('italic')}
-                    onPressedChange={() => editor.chain().focus().toggleItalic().run()}
+                    onPressedChange={() => {
+                        if (editor.state.selection.empty) {
+                            editor.chain().focus().selectParentNode().toggleItalic().run();
+                        } else {
+                            editor.chain().focus().toggleItalic().run();
+                        }
+                    }}
                     aria-label="Toggle italic"
                 >
                     <Italic className="h-4 w-4" />
                 </Toggle>
                 <Toggle
                     pressed={editor.isActive('underline')}
-                    onPressedChange={() => editor.chain().focus().toggleUnderline().run()}
+                    onPressedChange={() => {
+                        if (editor.state.selection.empty) {
+                            editor.chain().focus().selectParentNode().toggleUnderline().run();
+                        } else {
+                            editor.chain().focus().toggleUnderline().run();
+                        }
+                    }}
                     aria-label="Toggle underline"
                 >
                     <Underline className="h-4 w-4" />
                 </Toggle>
                 <Toggle
                     pressed={editor.isActive('strike')}
-                    onPressedChange={() => editor.chain().focus().toggleStrike().run()}
+                    onPressedChange={() => {
+                        if (editor.state.selection.empty) {
+                            editor.chain().focus().selectParentNode().toggleStrike().run();
+                        } else {
+                            editor.chain().focus().toggleStrike().run();
+                        }
+                    }}
                     aria-label="Toggle strikethrough"
                 >
                     <Strikethrough className="h-4 w-4" />
