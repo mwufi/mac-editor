@@ -2,6 +2,7 @@
 const nextConfig = {
     output: 'export',
     images: {
+        unoptimized: true,
         remotePatterns: [
             {
                 hostname: 'www.decorilla.com',
