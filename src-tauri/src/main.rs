@@ -58,7 +58,19 @@ fn main() {
             description: "create_share_links_table",
             sql: "CREATE TABLE share_links (id INTEGER PRIMARY KEY, note_id INTEGER, link TEXT, created_at DATETIME, updated_at DATETIME, user_id INTEGER, FOREIGN KEY(note_id) REFERENCES notes(id), FOREIGN KEY(user_id) REFERENCES users(id));",
             kind: MigrationKind::Up,
-        }
+        },
+        Migration {
+            version: 7,
+            description: "add_unique_constraint_to_notes_collections",
+            sql: "CREATE UNIQUE INDEX idx_unique_note_collection ON notes_collections(note_id, collection_id);",
+            kind: MigrationKind::Up,
+        },
+        Migration {
+            version: 8,
+            description: "add_unique_constraint_to_users_handle_and_email",
+            sql: "CREATE UNIQUE INDEX idx_unique_user_handle ON users(handle); CREATE UNIQUE INDEX idx_unique_user_email ON users(email);",
+            kind: MigrationKind::Up,
+        },
     ];
 
     // This is where you pass in your commands
