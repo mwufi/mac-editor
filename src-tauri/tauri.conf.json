@@ -42,8 +42,14 @@
   },
   "productName": "Wordy",
   "version": "0.1.0",
-  "identifier": "com.tauri.dev",
-  "plugins": {},
+  "identifier": "com.wordy.app",
+  "plugins": {
+    "sql": {
+      "preload": [
+        "sqlite:real.db"
+      ]
+    }
+  },
   "app": {
     "windows": [
       {
