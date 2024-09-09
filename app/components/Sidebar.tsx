@@ -1,5 +1,7 @@
 import Link from "next/link";
 import { LayoutDashboard, Star, Archive, Trash2, Folder } from "lucide-react";
+import { collectionsAtom } from "../atoms";
+import { useAtom } from "jotai";
 
 interface SidebarItemProps {
     icon: React.ElementType;
@@ -36,7 +38,11 @@ const Book = () => (
         </div>
     </div>
 )
+
+
+
 const Sidebar = () => {
+    const [collections, setCollections] = useAtom(collectionsAtom);
     return (
         <div className="shrink-0 w-64 h-full overflow-y-auto bg-gray-50 dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 p-4">
             <div className="space-y-2">
@@ -55,12 +61,9 @@ const Sidebar = () => {
             <div className="mt-8">
                 <h3 className="px-4 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Vault</h3>
                 <div className="mt-2 space-y-1">
-                    <SidebarItem icon={Folder} label="All Notes" count={200} />
-                    <SidebarItem icon={Folder} label="Articles" count={12} />
-                    <SidebarItem icon={Folder} label="Recipes" count={12} />
-                    <SidebarItem icon={Folder} label="Inspiration" count={12} />
-                    <SidebarItem icon={Folder} label="Workouts" count={12} />
-                    <SidebarItem icon={Folder} label="Content Ideas" count={12} />
+                    {collections.map((collection) => (
+                        <SidebarItem key={collection.id} icon={Folder} label={collection.name} count={collection.note_count} />
+                    ))}
                 </div>
             </div>
         </div>

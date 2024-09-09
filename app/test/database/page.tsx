@@ -23,6 +23,35 @@ async function fetchAllData(db: Database) {
   return { users, notes, collections, notesCollections, shareLinks };
 }
 
+async function getCollectionsWithNoteCount(db: Database, userId: string) {
+  const query = `
+    SELECT 
+      c.id, 
+      c.name, 
+      c.description, 
+      COUNT(nc.note_id) as note_count
+    FROM 
+      collections c
+    LEFT JOIN 
+      notes_collections nc ON c.id = nc.collection_id
+    WHERE 
+      c.user_id = $1
+    GROUP BY 
+      c.id
+    ORDER BY 
+      c.name
+  `;
+  
+  try {
+    const collections = await db.select(query, [userId]);
+    return collections;
+  } catch (error) {
+    console.error("Error fetching collections with note count:", error);
+    throw error;
+  }
+}
+
+
 async function addUser(db: Database, name: string, handle: string, email: string) {
   await db.execute(
     "INSERT INTO users (name, handle, email) VALUES ($1, $2, $3)",

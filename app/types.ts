@@ -43,3 +43,18 @@ export interface Author {
     name: string;
     email: string;
 }
+
+
+export interface User {
+    id: string;
+    name: string;
+    handle: string;
+    email?: string;
+}
+
+export interface Collection {
+    id: string;
+    name: string;
+    description: string;
+    note_count: number;
+}
