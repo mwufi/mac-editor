@@ -1,6 +1,6 @@
 "use client";
 
-import { readTextFile } from "@tauri-apps/api/fs";
+import { readTextFile } from "@tauri-apps/plugin-fs";
 import { FullScreenSection } from "@/app/components/Layout";
 import { ensureDir, getFileTree } from "@/lib/notes";
 import { useEffect, useState } from "react";

@@ -1,7 +1,6 @@
 // Prevents additional console window on Windows in release, DO NOT REMOVE!!
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
-
 use std::fs;
 
 #[tauri::command]
@@ -16,13 +15,16 @@ fn read_config() -> Result<String, String> {
 
 #[tauri::command]
 fn my_custom_command() {
-  println!("I was invoked from JS!");
+    println!("I was invoked from JS!");
 }
 
 fn main() {
-  // This is where you pass in your commands
-  tauri::Builder::default()
-    .invoke_handler(tauri::generate_handler![my_custom_command, read_config])
-    .run(tauri::generate_context!())
-    .expect("error while running tauri application");
+    // This is where you pass in your commands
+    tauri::Builder::default()
+        .plugin(tauri_plugin_sql::Builder::new().build())
+        .plugin(tauri_plugin_fs::init())
+        .plugin(tauri_plugin_sql::Builder::default().build())
+        .invoke_handler(tauri::generate_handler![my_custom_command, read_config])
+        .run(tauri::generate_context!())
+        .expect("error while running tauri application");
 }

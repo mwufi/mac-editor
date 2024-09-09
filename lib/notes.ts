@@ -1,6 +1,6 @@
 // it's just a big mega note
 import { appConfigDir, appDataDir, desktopDir } from '@tauri-apps/api/path';
-import { exists } from '@tauri-apps/api/fs';
+import { exists } from '@tauri-apps/plugin-fs';
 
 export async function getAppDataDir() {
     const appDataDirPath = await appDataDir();
@@ -12,7 +12,7 @@ export async function getAppDataDir() {
         desktopDirPath,
     };
 }
-import { createDir, BaseDirectory } from '@tauri-apps/api/fs';
+import { createDir, BaseDirectory } from '@tauri-apps/plugin-fs';
 
 export async function ensureDir(path: string) {
     const existingDir = await exists(path, { dir: BaseDirectory.AppData });
@@ -24,7 +24,7 @@ export async function ensureDir(path: string) {
 
 
 
-import { readDir } from '@tauri-apps/api/fs';
+import { readDir } from '@tauri-apps/plugin-fs';
 
 export async function getFileTree() {
     const appDir = await getAppDataDir();

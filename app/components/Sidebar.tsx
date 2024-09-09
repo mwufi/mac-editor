@@ -49,6 +49,7 @@ const Sidebar = () => {
                 <h3 className="px-4 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Tests</h3>
                 <div className="mt-2 space-y-1">
                     <SidebarItem icon={Trash2} label="Test dialog" count={12} href="/test/dialog" />
+                    <SidebarItem icon={Trash2} label="Test database" count={12} href="/test/database" />
                 </div>
             </div>
             <div className="mt-8">
