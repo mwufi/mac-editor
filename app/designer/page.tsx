@@ -1,26 +1,11 @@
+"use client"
+
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { FullScreenSection, TwoColumnLayout } from "../components/Layout";
 
-// A full screen section. By default, the children are full height! this is great.
-export const FullScreenSection = ({ children, className, peekNext = false }: { children?: React.ReactNode, className?: string, peekNext?: boolean }) => {
-    return (
-        <div className={`relative w-full ${peekNext ? "h-[95vh]" : "h-screen"} rounded-lg overflow-hidden ${className} grid w-full h-full`}>
-            <div className="grid w-full h-full">
-                {children}
-            </div>
-        </div>
-    )
-}
-
-export const TwoColumnLayout = ({ children, className }: { children?: React.ReactNode, className?: string }) => {
-    return (
-        <div className={`grid grid-cols-1 md:grid-cols-2 ${className}`}>
-            {children}
-        </div>
-    )
-}
 
 const Hero = () => {
     return (
@@ -106,7 +91,6 @@ function Preview() {
 }
 
 function ProfileAside() {
-
     return (
         <aside className="bg-blue-100 headermenu">
             <p className="header">
@@ -134,7 +118,6 @@ function ProfileAside() {
         </aside>
     )
 }
-
 export default function Designer() {
     return (
         <>
@@ -177,7 +160,6 @@ export default function Designer() {
                         <h1 className="text-4xl" id="colors">Pick your colors</h1>
 
                     </div>
-                    <p className="text-lg">Welcome to the party</p>
                 </TwoColumnLayout>
             </FullScreenSection>
         </>

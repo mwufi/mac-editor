@@ -73,7 +73,7 @@ const TipTapEditor = ({ editable = true, initialContent = null, onUpdate = (cont
         content: initialContent,
         editorProps: {
             attributes: {
-                class: `${libreBaskerville.className} h-full pb-10 min-h-[400px] focus:outline-none`,
+                class: `${libreBaskerville.className} h-full focus:outline-none`,
             },
         },
         editable: editable,

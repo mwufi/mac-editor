@@ -25,7 +25,7 @@ export default function RootLayout({
       <JotaiProvider>
         <Toaster richColors position="top-right" />
         <body
-          className={`${inter.className} antialiased`}
+          className={`${inter.className} antialiased h-screen`}
         >
           {children}
           <TailwindSizeMarker />
