@@ -65,8 +65,6 @@ const Editor = () => {
 
         return (
             <div className="flex-1 h-full bg-white dark:bg-gray-900 px-8">
-                <p className="text-xs text-gray-500 pt-6">The current selected note is: {selectedNote.title}. {selectedNote.id}</p>
-                <p className="text-xs text-gray-500">The latest selected note is: {latest}</p>
                 <TipTapEditor onUpdate={handleUpdate} initialContent={initialContent} />
                 <div className="fixed bottom-4 right-4 flex items-center space-x-2">
                     {lastSavedContent === currentContent ? (
