@@ -23,10 +23,10 @@ export async function getCurrentUser(db: Database): Promise<User | null> {
   }
 }
 
-export async function saveNoteContent(db: Database, noteId: string, content: string) {
+export async function saveNoteContent(db: Database, noteId: string, content: string, title: string) {
   const now = new Date().toISOString();
   await db.execute(
-    "UPDATE notes SET content = $1, updated_at = $2 WHERE id = $3",
+    "UPDATE notes SET content = $1, title = $2, updated_at = $3 WHERE id = $4",
     [content, now, noteId]
   );
 }

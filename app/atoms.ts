@@ -25,6 +25,18 @@ export const updateContentAtom = atom(null, (get, set, update: string) => {
   set(collectionNotesAtom, updatedNotes as Note[]);
 });
 
+export const updateTitleAtom = atom(null, (get, set, update: string) => {
+  const id = get(selectedNoteIdAtom);
+  const notes = get(collectionNotesAtom);
+  const updatedNotes = notes.map((note) => {
+    if (note.id === id) {
+      return { ...note, title: update };
+    }
+    return note;
+  });
+  set(collectionNotesAtom, updatedNotes as Note[]);
+});
+
 export const currentContentAtom = atom<string | null>(null);
 
 export const lastSavedContentAtom = atom<string | null>(null);

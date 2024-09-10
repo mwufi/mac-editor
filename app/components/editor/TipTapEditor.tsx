@@ -37,7 +37,7 @@ interface TipTapEditorProps {
 }
 
 
-const TipTapEditor = ({ editable = true, initialContent = null, onUpdate = (content: string) => { } }: TipTapEditorProps) => {
+const TipTapEditor = ({ editable = true, initialContent = null, onUpdate = (contentAsHtml: string, contentAsText: string) => { } }: TipTapEditorProps) => {
     const [_, setEditor] = useAtom(editorAtom);
 
     const editor = useTiptapEditor({
@@ -90,8 +90,9 @@ const TipTapEditor = ({ editable = true, initialContent = null, onUpdate = (cont
             setEditor(editor); // Set the editor in the context when it's created
 
             const handleUpdate = () => {
-                const content = editor.getHTML();
-                onUpdate(content);
+                const contentAsHtml = editor.getHTML();
+                const contentAsText = editor.getText();
+                onUpdate(contentAsHtml, contentAsText);
             };
 
             editor.on('update', handleUpdate);

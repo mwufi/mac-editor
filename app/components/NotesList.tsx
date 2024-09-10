@@ -12,10 +12,16 @@ interface NoteItemProps {
     date: string;
     image?: string;
     onClick?: () => void;
+    isSelected: boolean; // Add this prop
 }
 
-const NoteItem = ({ title, date, image, onClick }: NoteItemProps) => (
-    <div className="flex items-center justify-between py-2 px-4 hover:bg-gray-100 dark:hover:bg-gray-800" onClick={onClick}>
+const NoteItem = ({ title, date, image, onClick, isSelected }: NoteItemProps) => (
+    <div 
+        className={`flex items-center justify-between py-2 px-4 hover:bg-gray-100 dark:hover:bg-gray-800 ${
+            isSelected ? 'bg-gray-200 dark:bg-gray-700' : ''
+        }`} 
+        onClick={onClick}
+    >
         <div>
             <h3 className="text-sm font-medium">{title}</h3>
             <p className="text-xs text-gray-500 dark:text-gray-400">{date}</p>
@@ -25,7 +31,7 @@ const NoteItem = ({ title, date, image, onClick }: NoteItemProps) => (
 );
 
 const NotesList = () => {
-    const setSelectedNoteId = useSetAtom(selectedNoteIdAtom);
+    const [selectedNoteId, setSelectedNoteId] = useAtom(selectedNoteIdAtom);
     const [selectedCollection] = useAtom(selectedCollectionAtom);
     const [notes, setNotes] = useAtom(collectionNotesAtom);
 
@@ -64,7 +70,9 @@ const NotesList = () => {
                 </div>
             </div>
             <div className="overflow-y-auto h-[calc(100%-6rem)]">
-                <div className="py-2 px-4 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase">Notes</div>
+                <div className="py-2 px-4 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase">
+                    {selectedCollection ? `Notes in ${selectedCollection}` : 'Notes'}
+                </div>
                 {notes.map((note) => (
                     <NoteItem
                         key={note.id}
@@ -73,6 +81,7 @@ const NotesList = () => {
                         onClick={() => {
                             setSelectedNoteId(note.id);
                         }}
+                        isSelected={note.id === selectedNoteId}
                     />
                 ))}
             </div>

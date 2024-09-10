@@ -1,38 +1,47 @@
 "use client";
 
 import { useAtom, useAtomValue, useSetAtom } from "jotai";
-import { editorAtom, lastSavedContentAtom, selectedNoteAtom, currentContentAtom, updateContentAtom } from "../atoms";
+import { editorAtom, lastSavedContentAtom, selectedNoteAtom, currentContentAtom, updateContentAtom, updateTitleAtom } from "../atoms";
 import TipTapEditor from "./editor/TipTapEditor";
 import { useEffect, useCallback, useMemo } from "react";
-import { loadDatabase, saveNoteContent } from "@/lib/orm";
+import { loadDatabase, saveNoteContent, saveNoteTitle } from "@/lib/orm";
 import { useDebounce } from "@/app/hooks/useDebounce";
 
 const Editor = () => {
     const selectedNote = useAtomValue(selectedNoteAtom);
     const updateSelectedNoteContent = useSetAtom(updateContentAtom);
+    const updateSelectedNoteTitle = useSetAtom(updateTitleAtom);
     const [currentContent, setCurrentContent] = useAtom(currentContentAtom);
     const [lastSavedContent, setLastSavedContent] = useAtom(lastSavedContentAtom);
     const editor = useAtomValue(editorAtom);
 
-    const saveContent = useCallback(async (content: string) => {
+    const saveContent = useCallback(async (contentAsHtml: string, contentAsText: string) => {
         if (selectedNote) {
             const db = await loadDatabase();
-            console.log("saving content", content);
-            await saveNoteContent(db, selectedNote.id, content);
-            setLastSavedContent(content);
-            updateSelectedNoteContent(content);
+            console.log("saving content", contentAsHtml);
+
+            // Extract the first line as the title
+            const lines = contentAsText.split('\n');
+            const newTitle = lines[0].trim();
+            if (newTitle !== selectedNote.title) {
+                updateSelectedNoteTitle(newTitle);
+            }
+
+            await saveNoteContent(db, selectedNote.id, contentAsHtml, newTitle);
+            setLastSavedContent(contentAsHtml);
+            updateSelectedNoteContent(contentAsHtml);
         } else {
             console.error("No selected note");
         }
-    }, [selectedNote, setLastSavedContent, updateSelectedNoteContent]);
+    }, [selectedNote, setLastSavedContent, updateSelectedNoteContent, updateSelectedNoteTitle]);
 
-    const debouncedSave = useDebounce(saveContent, 500);
+    const debouncedSave = useDebounce(saveContent, 300);
 
-    const handleUpdate = useCallback((content: string) => {
-        setCurrentContent(content);
+    const handleUpdate = useCallback((contentAsHtml: string, contentAsText: string) => {
+        setCurrentContent(contentAsHtml);
         console.log("current selected note", selectedNote);
         if (selectedNote) {
-            debouncedSave(content);
+            debouncedSave(contentAsHtml, contentAsText);
         }
     }, [debouncedSave, selectedNote, setCurrentContent]);
 
@@ -51,12 +60,20 @@ const Editor = () => {
 
         return (
             <div className="flex-1 h-full bg-white dark:bg-gray-900 px-8">
-                {lastSavedContent !== currentContent && (
-                    <div className="bg-yellow-100 p-4 rounded-md mb-4">
-                        <p className="text-yellow-800">Unsaved changes {currentContent} | {lastSavedContent}</p>
-                    </div>
-                )}
                 <TipTapEditor onUpdate={handleUpdate} />
+                <div className="fixed bottom-4 right-4 flex items-center space-x-2">
+                    {lastSavedContent === currentContent ? (
+                        <div className="flex items-center">
+                            <div className="w-2 h-2 bg-green-500 rounded-full mr-2"></div>
+                            <span className="text-xs text-gray-500">Saved</span>
+                        </div>
+                    ) : (
+                        <div className="flex items-center">
+                            <div className="w-2 h-2 bg-orange-500 rounded-full mr-2"></div>
+                            <span className="text-xs text-gray-500">Writing...</span>
+                        </div>
+                    )}
+                </div>
             </div>
         );
     }, [selectedNote, lastSavedContent, currentContent, handleUpdate]);
