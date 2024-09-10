@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { LayoutDashboard, Star, Archive, Trash2, Folder } from "lucide-react";
-import { collectionsAtom } from "../atoms";
+import { collectionsAtom, selectedCollectionAtom } from "../atoms";
 import { useAtom } from "jotai";
 
 interface SidebarItemProps {
@@ -8,10 +8,11 @@ interface SidebarItemProps {
     label: string;
     count?: number;
     href?: string;
+    onClick?: () => void;
 }
 
-const SidebarItem = ({ icon: Icon, label, count, href = "#" }: SidebarItemProps) => (
-    <Link href={href} className="flex w-full items-center gap-2 px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-md">
+const SidebarItem = ({ icon: Icon, label, count, href = "#", onClick }: SidebarItemProps) => (
+    <Link href={href} className="flex w-full items-center gap-2 px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-md" onClick={onClick}>
         <Icon size={18} className="text-red-400" fill="currentColor" />
         <span>{label}</span>
         {count && <span className="ml-auto bg-gray-200 dark:bg-gray-700 text-xs font-medium px-2 py-0.5 rounded-full">{count}</span>}
@@ -42,7 +43,9 @@ const Book = () => (
 
 
 const Sidebar = () => {
-    const [collections, setCollections] = useAtom(collectionsAtom);
+    const [collections] = useAtom(collectionsAtom);
+    const [, setSelectedCollection] = useAtom(selectedCollectionAtom);
+
     return (
         <div className="shrink-0 w-64 h-full overflow-y-auto bg-gray-50 dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 p-4">
             <div className="space-y-2">
@@ -62,7 +65,13 @@ const Sidebar = () => {
                 <h3 className="px-4 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Vault</h3>
                 <div className="mt-2 space-y-1">
                     {collections.map((collection) => (
-                        <SidebarItem key={collection.id} icon={Folder} label={collection.name} count={collection.note_count} />
+                        <SidebarItem
+                            key={collection.id}
+                            icon={Folder}
+                            label={collection.name}
+                            count={collection.note_count}
+                            onClick={() => setSelectedCollection(collection.id)}
+                        />
                     ))}
                 </div>
             </div>

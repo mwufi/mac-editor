@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { toast } from "sonner"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { addUser, addNote, addCollection, addNoteToCollection, deleteRecord } from '@/lib/orm'
 
 async function loadDatabase() {
   return await Database.load('sqlite:real.db')
@@ -23,69 +24,6 @@ async function fetchAllData(db: Database) {
   return { users, notes, collections, notesCollections, shareLinks };
 }
 
-async function getCollectionsWithNoteCount(db: Database, userId: string) {
-  const query = `
-    SELECT 
-      c.id, 
-      c.name, 
-      c.description, 
-      COUNT(nc.note_id) as note_count
-    FROM 
-      collections c
-    LEFT JOIN 
-      notes_collections nc ON c.id = nc.collection_id
-    WHERE 
-      c.user_id = $1
-    GROUP BY 
-      c.id
-    ORDER BY 
-      c.name
-  `;
-  
-  try {
-    const collections = await db.select(query, [userId]);
-    return collections;
-  } catch (error) {
-    console.error("Error fetching collections with note count:", error);
-    throw error;
-  }
-}
-
-
-async function addUser(db: Database, name: string, handle: string, email: string) {
-  await db.execute(
-    "INSERT INTO users (name, handle, email) VALUES ($1, $2, $3)",
-    [name, handle, email]
-  );
-}
-
-async function addNote(db: Database, title: string, content: string, userId: string) {
-  const now = new Date().toISOString();
-  await db.execute(
-    "INSERT INTO notes (title, content, created_at, updated_at, user_id) VALUES ($1, $2, $3, $4, $5)",
-    [title, content, now, now, userId]
-  );
-}
-
-async function addCollection(db: Database, name: string, description: string, userId: string) {
-  const now = new Date().toISOString();
-  await db.execute(
-    "INSERT INTO collections (name, description, created_at, updated_at, user_id) VALUES ($1, $2, $3, $4, $5)",
-    [name, description, now, now, userId]
-  );
-}
-
-async function addNoteToCollection(db: Database, noteId: string, collectionId: string, userId: string) {
-  const now = new Date().toISOString();
-  await db.execute(
-    "INSERT INTO notes_collections (note_id, collection_id, created_at, updated_at, user_id) VALUES ($1, $2, $3, $4, $5)",
-    [noteId, collectionId, now, now, userId]
-  );
-}
-
-async function deleteRecord(db: Database, table: string, id: string) {
-  await db.execute(`DELETE FROM ${table} WHERE id = $1`, [id]);
-}
 
 export default function Page() {
   const [data, setData] = useState<any>(null);

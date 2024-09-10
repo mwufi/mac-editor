@@ -1,50 +1,5 @@
 
-export interface LocalNote {
-    id: string;
-    fullpath: string;
-    content: string;
-    createdAt: string;
-    updatedAt: string;
-
-    title: string;
-    date: string;
-    image?: string;
-}
-
-export interface Note {
-    id: string;
-    content: string;
-    title: string;
-    image?: string;
-
-    updatedAt: Date;
-    createdAt: Date;
-    versions: Version[];
-    parent_folder: Folder;
-}
-
-export interface Version {
-    id: string;
-    note_id: string;
-    content: string;
-    author: Author;
-    updatedAt: Date;
-    createdAt: Date;
-}
-
-export interface Folder {
-    id: string;
-    name: string;
-    notes: Note[];
-}
-
-export interface Author {
-    id: string;
-    name: string;
-    email: string;
-}
-
-
+// ---- our new models ----
 export interface User {
     id: string;
     name: string;
@@ -57,4 +12,13 @@ export interface Collection {
     name: string;
     description: string;
     note_count: number;
+}
+
+export interface Note {
+    id: string;
+    title: string;
+    content: string;
+    created_at: Date;
+    updated_at: Date;
+    user_id: string;
 }
