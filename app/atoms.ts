@@ -2,8 +2,12 @@ import { atom } from "jotai";
 import { Note, User, Collection } from "./types";
 import { Editor } from "@tiptap/react";
 
+export const collectionsAtom = atom<Collection[]>([]);
+export const selectedCollectionIdAtom = atom<string | null>(null);
+
 export const collectionNotesAtom = atom<Note[]>([]);
 export const selectedNoteIdAtom = atom<string | null>(null);
+export const initialContentAtom = atom<string | null>(null);
 
 // only gets the selected note when the selected note id changes
 export const selectedNoteAtom = atom<Note | null>((get) => {
@@ -46,6 +50,3 @@ export const editorAtom = atom<Editor | null>(null);
 export const dialogOpenAtom = atom(false);
 
 export const currentUserAtom = atom<User | null>(null);
-export const collectionsAtom = atom<Collection[]>([]);
-
-export const selectedCollectionAtom = atom<string | null>(null);

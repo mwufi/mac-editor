@@ -25,9 +25,10 @@ export async function getCurrentUser(db: Database): Promise<User | null> {
 
 export async function saveNoteContent(db: Database, noteId: string, content: string, title: string) {
   const now = new Date().toISOString();
+  console.log("saving note content", noteId, content, title);
   await db.execute(
     "UPDATE notes SET content = $1, title = $2, updated_at = $3 WHERE id = $4",
-    [content, now, noteId]
+    [content, title, now, noteId]
   );
 }
 

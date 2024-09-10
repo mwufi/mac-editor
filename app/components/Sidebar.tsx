@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { LayoutDashboard, Star, Archive, Trash2, Folder } from "lucide-react";
-import { collectionsAtom, selectedCollectionAtom } from "../atoms";
+import { collectionsAtom, selectedCollectionIdAtom } from "../atoms";
 import { useAtom } from "jotai";
 
 interface SidebarItemProps {
@@ -44,7 +44,7 @@ const Book = () => (
 
 const Sidebar = () => {
     const [collections] = useAtom(collectionsAtom);
-    const [, setSelectedCollection] = useAtom(selectedCollectionAtom);
+    const [, setSelectedCollectionId] = useAtom(selectedCollectionIdAtom);
 
     return (
         <div className="shrink-0 w-64 h-full overflow-y-auto bg-gray-50 dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 p-4">
@@ -70,7 +70,7 @@ const Sidebar = () => {
                             icon={Folder}
                             label={collection.name}
                             count={collection.note_count}
-                            onClick={() => setSelectedCollection(collection.id)}
+                            onClick={() => setSelectedCollectionId(collection.id)}
                         />
                     ))}
                 </div>

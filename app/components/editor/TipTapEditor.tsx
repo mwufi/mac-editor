@@ -31,13 +31,11 @@ const libreBaskerville = Libre_Baskerville({
 });
 
 interface TipTapEditorProps {
-    editable?: boolean;
-    initialContent?: string | null;
-    onUpdate?: (content: string) => void;
+    onUpdate: (contentAsHtml: string, contentAsText: string) => void;
+    initialContent: string | null;
 }
 
-
-const TipTapEditor = ({ editable = true, initialContent = null, onUpdate = (contentAsHtml: string, contentAsText: string) => { } }: TipTapEditorProps) => {
+const TipTapEditor: React.FC<TipTapEditorProps> = ({ onUpdate, initialContent }) => {
     const [_, setEditor] = useAtom(editorAtom);
 
     const editor = useTiptapEditor({
@@ -70,13 +68,13 @@ const TipTapEditor = ({ editable = true, initialContent = null, onUpdate = (cont
                 nocookie: true,
             })
         ],
-        content: initialContent,
+        content: null,
         editorProps: {
             attributes: {
                 class: `${libreBaskerville.className} h-full focus:outline-none`,
             },
         },
-        editable: editable,
+        editable: true,
     })
 
     useEffect(() => {
@@ -90,7 +88,7 @@ const TipTapEditor = ({ editable = true, initialContent = null, onUpdate = (cont
             setEditor(editor); // Set the editor in the context when it's created
 
             const handleUpdate = () => {
-                const contentAsHtml = editor.getHTML();
+                const contentAsHtml = editor.getJSON();
                 const contentAsText = editor.getText();
                 onUpdate(contentAsHtml, contentAsText);
             };

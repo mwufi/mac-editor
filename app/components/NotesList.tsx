@@ -4,7 +4,7 @@ import { useEffect } from "react";
 import { Search, PenSquare, LayoutGrid, List, Trash } from "lucide-react";
 import { Note } from "../types";
 import { useAtom, useSetAtom } from "jotai";
-import { selectedCollectionAtom, collectionNotesAtom, selectedNoteIdAtom } from "@/app/atoms";
+import { selectedCollectionIdAtom, collectionNotesAtom, selectedNoteIdAtom, initialContentAtom } from "@/app/atoms";
 import { getNotesInCollection, loadDatabase } from "@/lib/orm";
 
 interface NoteItemProps {
@@ -32,14 +32,15 @@ const NoteItem = ({ title, date, image, onClick, isSelected }: NoteItemProps) =>
 
 const NotesList = () => {
     const [selectedNoteId, setSelectedNoteId] = useAtom(selectedNoteIdAtom);
-    const [selectedCollection] = useAtom(selectedCollectionAtom);
+    const setInitialContent = useSetAtom(initialContentAtom);
+    const [selectedCollectionId] = useAtom(selectedCollectionIdAtom);
     const [notes, setNotes] = useAtom(collectionNotesAtom);
 
     useEffect(() => {
         const fetchNotes = async () => {
-            if (selectedCollection) {
+            if (selectedCollectionId) {
                 const db = await loadDatabase();
-                const collectionNotes = await getNotesInCollection(db, selectedCollection);
+                const collectionNotes = await getNotesInCollection(db, selectedCollectionId);
                 setNotes(collectionNotes as Note[]);
             } else {
                 setNotes([]);
@@ -47,7 +48,7 @@ const NotesList = () => {
         };
 
         fetchNotes();
-    }, [selectedCollection]);
+    }, [selectedCollectionId]);
 
     return (
         <div className="shrink-0 w-80 h-full bg-white dark:bg-gray-900 border-r border-gray-200 dark:border-gray-700">
@@ -71,7 +72,7 @@ const NotesList = () => {
             </div>
             <div className="overflow-y-auto h-[calc(100%-6rem)]">
                 <div className="py-2 px-4 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase">
-                    {selectedCollection ? `Notes in ${selectedCollection}` : 'Notes'}
+                    {selectedCollectionId ? `Notes in ${selectedCollectionId}` : 'Notes'}
                 </div>
                 {notes.map((note) => (
                     <NoteItem
@@ -80,6 +81,7 @@ const NotesList = () => {
                         date={new Date(note.updated_at).toLocaleDateString()}
                         onClick={() => {
                             setSelectedNoteId(note.id);
+                            setInitialContent(note.content);
                         }}
                         isSelected={note.id === selectedNoteId}
                     />

@@ -1,13 +1,24 @@
 'use client';
 
-import { useCallback, useRef } from 'react';
+import { useCallback, useRef, useEffect } from 'react';
 
-export function useDebounce(callback: Function, delay: number) {
+export function useDebounce<T extends (...args: any[]) => any>(
+  callback: T,
+  delay: number
+) {
   // Store the timeout reference
   const timeoutRef = useRef<number | null>(null);
+  
+  // Store the latest callback
+  const latestCallback = useRef(callback);
+
+  // Update the latest callback whenever it changes
+  useEffect(() => {
+    latestCallback.current = callback;
+  }, [callback]);
 
   // Return a memoized debounced function
-  return useCallback((...args: any[]) => {
+  return useCallback((...args: Parameters<T>) => {
     // Clear any existing timeout
     if (timeoutRef.current) {
       clearTimeout(timeoutRef.current);
@@ -15,8 +26,8 @@ export function useDebounce(callback: Function, delay: number) {
 
     // Set a new timeout
     timeoutRef.current = window.setTimeout(() => {
-      // Execute the callback with provided arguments
-      callback(...args);
+      // Execute the latest callback with provided arguments
+      latestCallback.current(...args);
     }, delay);
-  }, [callback, delay]);
+  }, [delay]);
 }
