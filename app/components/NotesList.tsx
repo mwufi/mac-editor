@@ -1,10 +1,10 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { Search, PenSquare, LayoutGrid, List, Trash } from "lucide-react";
 import { Note } from "../types";
-import { useAtom } from "jotai";
-import { selectedNoteAtom, selectedCollectionAtom } from "@/app/atoms";
+import { useAtom, useSetAtom } from "jotai";
+import { selectedNoteAtom, selectedCollectionAtom, collectionNotesAtom } from "@/app/atoms";
 import { getNotesInCollection, loadDatabase } from "@/lib/orm";
 
 interface NoteItemProps {
@@ -25,16 +25,16 @@ const NoteItem = ({ title, date, image, onClick }: NoteItemProps) => (
 );
 
 const NotesList = () => {
-    const [selectedNote, setSelectedNote] = useAtom(selectedNoteAtom);
+    const setSelectedNote = useSetAtom(selectedNoteAtom);
     const [selectedCollection] = useAtom(selectedCollectionAtom);
-    const [notes, setNotes] = useState<Note[]>([]);
+    const [notes, setNotes] = useAtom(collectionNotesAtom);
 
     useEffect(() => {
         const fetchNotes = async () => {
             if (selectedCollection) {
                 const db = await loadDatabase();
                 const collectionNotes = await getNotesInCollection(db, selectedCollection);
-                setNotes(collectionNotes);
+                setNotes(collectionNotes as Note[]);
             } else {
                 setNotes([]);
             }
@@ -70,7 +70,9 @@ const NotesList = () => {
                         key={note.id}
                         title={note.title}
                         date={new Date(note.updated_at).toLocaleDateString()}
-                        onClick={() => setSelectedNote(note)}
+                        onClick={() => {
+                            setSelectedNote(note);
+                        }}
                     />
                 ))}
             </div>

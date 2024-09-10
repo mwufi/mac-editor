@@ -2,7 +2,13 @@ import { atom } from "jotai";
 import { Note, User, Collection } from "./types";
 import { Editor } from "@tiptap/react";
 
+export const collectionNotesAtom = atom<Note[]>([]);
 export const selectedNoteAtom = atom<Note | null>(null);
+
+export const currentContentAtom = atom<string | null>(null);
+
+export const lastSavedContentAtom = atom<string | null>(null);
+
 export const editorAtom = atom<Editor | null>(null);
 
 export const dialogOpenAtom = atom(false);
