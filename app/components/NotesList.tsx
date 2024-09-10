@@ -4,7 +4,7 @@ import { useEffect } from "react";
 import { Search, PenSquare, LayoutGrid, List, Trash } from "lucide-react";
 import { Note } from "../types";
 import { useAtom, useSetAtom } from "jotai";
-import { selectedNoteAtom, selectedCollectionAtom, collectionNotesAtom } from "@/app/atoms";
+import { selectedCollectionAtom, collectionNotesAtom, selectedNoteIdAtom } from "@/app/atoms";
 import { getNotesInCollection, loadDatabase } from "@/lib/orm";
 
 interface NoteItemProps {
@@ -25,7 +25,7 @@ const NoteItem = ({ title, date, image, onClick }: NoteItemProps) => (
 );
 
 const NotesList = () => {
-    const setSelectedNote = useSetAtom(selectedNoteAtom);
+    const setSelectedNoteId = useSetAtom(selectedNoteIdAtom);
     const [selectedCollection] = useAtom(selectedCollectionAtom);
     const [notes, setNotes] = useAtom(collectionNotesAtom);
 
@@ -71,7 +71,7 @@ const NotesList = () => {
                         title={note.title}
                         date={new Date(note.updated_at).toLocaleDateString()}
                         onClick={() => {
-                            setSelectedNote(note);
+                            setSelectedNoteId(note.id);
                         }}
                     />
                 ))}

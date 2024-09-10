@@ -1,30 +1,18 @@
 "use client";
 
-import { useAtom, useAtomValue } from "jotai";
-import { editorAtom, lastSavedContentAtom, selectedNoteAtom, currentContentAtom } from "../atoms";
+import { useAtom, useAtomValue, useSetAtom } from "jotai";
+import { editorAtom, lastSavedContentAtom, selectedNoteAtom, currentContentAtom, updateContentAtom } from "../atoms";
 import TipTapEditor from "./editor/TipTapEditor";
-import { useEffect, useCallback } from "react";
+import { useEffect, useCallback, useMemo } from "react";
 import { loadDatabase, saveNoteContent } from "@/lib/orm";
 import { useDebounce } from "@/app/hooks/useDebounce";
 
 const Editor = () => {
-    const [selectedNote, setSelectedNote] = useAtom(selectedNoteAtom);
+    const selectedNote = useAtomValue(selectedNoteAtom);
+    const updateSelectedNoteContent = useSetAtom(updateContentAtom);
     const [currentContent, setCurrentContent] = useAtom(currentContentAtom);
     const [lastSavedContent, setLastSavedContent] = useAtom(lastSavedContentAtom);
     const editor = useAtomValue(editorAtom);
-
-    if (!selectedNote) {
-        return <div>No note selected</div>;
-    }
-
-    useEffect(() => {
-        // when the selected note changes, update the editor content
-        if (editor && selectedNote) {
-            editor.commands.setContent(selectedNote.content || "");
-            setCurrentContent(selectedNote.content || "");
-            setLastSavedContent(selectedNote.content || "");
-        }
-    }, [editor, selectedNote, setCurrentContent, setLastSavedContent]);
 
     const saveContent = useCallback(async (content: string) => {
         if (selectedNote) {
@@ -32,19 +20,13 @@ const Editor = () => {
             console.log("saving content", content);
             await saveNoteContent(db, selectedNote.id, content);
             setLastSavedContent(content);
-            setSelectedNote((prevNote) => {
-                if (prevNote) {
-                    return { ...prevNote, content: content };
-                }
-                console.log("prevNote", prevNote);
-                return prevNote;
-            });
+            updateSelectedNoteContent(content);
         } else {
             console.error("No selected note");
         }
-    }, [selectedNote, setLastSavedContent, setSelectedNote]);
+    }, [selectedNote, setLastSavedContent, updateSelectedNoteContent]);
 
-    const debouncedSave = useDebounce(saveContent, 1000);
+    const debouncedSave = useDebounce(saveContent, 500);
 
     const handleUpdate = useCallback((content: string) => {
         setCurrentContent(content);
@@ -54,16 +36,32 @@ const Editor = () => {
         }
     }, [debouncedSave, selectedNote, setCurrentContent]);
 
-    return (
-        <div className="flex-1 h-full bg-white dark:bg-gray-900 px-8">
-            {lastSavedContent !== currentContent && (
-                <div className="bg-yellow-100 p-4 rounded-md mb-4">
-                    <p className="text-yellow-800">Unsaved changes {currentContent} | {lastSavedContent}</p>
-                </div>
-            )}
-            <TipTapEditor onUpdate={handleUpdate} />
-        </div>
-    );
+    useEffect(() => {
+        if (editor && selectedNote) {
+            editor.commands.setContent(selectedNote.content || "");
+            setCurrentContent(selectedNote.content || "");
+            setLastSavedContent(selectedNote.content || "");
+        }
+    }, [editor, selectedNote, setCurrentContent, setLastSavedContent]);
+
+    const editorContent = useMemo(() => {
+        if (!selectedNote) {
+            return <div>No note selected</div>;
+        }
+
+        return (
+            <div className="flex-1 h-full bg-white dark:bg-gray-900 px-8">
+                {lastSavedContent !== currentContent && (
+                    <div className="bg-yellow-100 p-4 rounded-md mb-4">
+                        <p className="text-yellow-800">Unsaved changes {currentContent} | {lastSavedContent}</p>
+                    </div>
+                )}
+                <TipTapEditor onUpdate={handleUpdate} />
+            </div>
+        );
+    }, [selectedNote, lastSavedContent, currentContent, handleUpdate]);
+
+    return editorContent;
 };
 
 export default Editor;

@@ -3,7 +3,27 @@ import { Note, User, Collection } from "./types";
 import { Editor } from "@tiptap/react";
 
 export const collectionNotesAtom = atom<Note[]>([]);
-export const selectedNoteAtom = atom<Note | null>(null);
+export const selectedNoteIdAtom = atom<string | null>(null);
+
+// only gets the selected note when the selected note id changes
+export const selectedNoteAtom = atom<Note | null>((get) => {
+  const id = get(selectedNoteIdAtom);
+  const notes = get(collectionNotesAtom);
+  return notes.find((note) => note.id === id) || null;
+});
+
+// write-only atom to update the content of the selected note
+export const updateContentAtom = atom(null, (get, set, update: string) => {
+  const id = get(selectedNoteIdAtom);
+  const notes = get(collectionNotesAtom);
+  const updatedNotes = notes.map((note) => {
+    if (note.id === id) {
+      return { ...note, content: update };
+    }
+    return note;
+  });
+  set(collectionNotesAtom, updatedNotes as Note[]);
+});
 
 export const currentContentAtom = atom<string | null>(null);
 
