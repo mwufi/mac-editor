@@ -45,7 +45,7 @@ const TipTapEditor: React.FC<TipTapEditorProps> = ({ onUpdate, initialContent })
 
     const editor = useTiptapEditor({
         extensions: [
-            CustomDocument,      
+            CustomDocument,
             StarterKit.configure({
                 document: false,
             }),
@@ -87,7 +87,12 @@ const TipTapEditor: React.FC<TipTapEditorProps> = ({ onUpdate, initialContent })
 
     useEffect(() => {
         if (editor && initialContent !== null) {
-            editor.commands.setContent(initialContent);
+            try {
+                editor.commands.setContent(JSON.parse(initialContent));
+            } catch (error) {
+                console.error("Error setting initial content in editor", error);
+                editor.commands.setContent(initialContent);
+            }
         }
     }, [editor, initialContent]);
 
@@ -112,7 +117,7 @@ const TipTapEditor: React.FC<TipTapEditorProps> = ({ onUpdate, initialContent })
     return <div>
         {editor &&
             <>
-                <Toolbar editor={editor} />
+                <Toolbar />
                 <EditorContent editor={editor} />
             </>
         }

@@ -49,6 +49,7 @@ const Editor = () => {
             try {
                 content = JSON.parse(initialContent || "{}");
             } catch (error) {
+                console.error("Error parsing initial content", error);
                 content = initialContent || "";
             }
             editor.commands.setContent(content);
@@ -63,7 +64,7 @@ const Editor = () => {
         }
 
         return (
-            <div className="flex-1 h-full bg-background dark:bg-gray-900 px-8">
+            <div className="flex-1 h-full dark:bg-gray-900 px-8 overflow-y-auto">
                 <TipTapEditor onUpdate={handleUpdate} initialContent={initialContent} />
                 <div className="fixed bottom-4 right-4 flex items-center space-x-2">
                     {lastSavedContent === currentContent ? (

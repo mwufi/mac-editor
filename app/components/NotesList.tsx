@@ -19,13 +19,13 @@ interface NoteItemProps {
 
 const NoteItem = ({ title, date, image, onClick, isSelected }: NoteItemProps) => (
     <div
-        className={`flex items-center justify-between py-2 px-4 group hover:bg-accent dark:hover:bg-gray-800 ${isSelected ? 'bg-pink-700' : ''
+        className={`flex items-center justify-between py-2 px-4 group hover:bg-gray-100 dark:hover:bg-gray-800 ${isSelected ? 'bg-blue-100 dark:bg-blue-900' : ''
             }`}
         onClick={onClick}
     >
         <div>
-            <h3 className="text-sm text-accent group-hover:text-accent-foreground font-medium">{title}</h3>
-            <p className="text-xs text-accent group-hover:text-accent-foreground dark:text-gray-400">{date}</p>
+            <h3 className="text-sm text-gray-800 dark:text-gray-200 group-hover:text-gray-900 dark:group-hover:text-gray-100 font-medium">{title}</h3>
+            <p className="text-xs text-gray-600 dark:text-gray-400 group-hover:text-gray-700 dark:group-hover:text-gray-300">{date}</p>
         </div>
         {image && <img src={image} alt={title} className="w-10 h-10 object-cover rounded" />}
     </div>
@@ -83,8 +83,8 @@ const NotesList = () => {
     const selectedNote = notes.find(note => note.id === selectedNoteId);
 
     return (
-        <div className="shrink-0 w-80 h-full bg-background dark:bg-gray-900 border-r border-border">
-            <div className="p-4 border-b border-border">
+        <div className="shrink-0 w-80 h-full bg-white dark:bg-gray-900 border-r border-gray-200 dark:border-gray-700">
+            <div className="p-4 border-b border-gray-200 dark:border-gray-700">
                 <div className="flex items-center justify-between mb-4">
                     <PenSquare
                         size={20}
@@ -106,7 +106,7 @@ const NotesList = () => {
                     <input
                         type="text"
                         placeholder="Search notes"
-                        className="w-full pl-10 pr-4 py-2 bg-gray-100 dark:bg-gray-800 border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        className="w-full pl-10 pr-4 py-2 bg-gray-100 dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                     />
                 </div>
             </div>
