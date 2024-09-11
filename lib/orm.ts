@@ -1,11 +1,9 @@
 'use client'
 
-import { Collection, User } from '@/app/types';
+import { Collection, Note, User } from '@/app/types';
 import { db } from './db';
-import { Users, Notes, Collections, NotesCollections } from './schema';
-import { eq, and, sql } from 'drizzle-orm';
-
-// Remove loadDatabase function as it's no longer needed
+import { Users, Notes, Collections, NotesCollections, ShareLinks } from './schema';
+import { eq, desc, sql } from 'drizzle-orm';
 
 export async function getCurrentUser(): Promise<User | null> {
   try {
@@ -55,7 +53,6 @@ export async function getNotesInCollection(collectionId: string) {
   }).then(results => results.map(result => result.note));
 }
 
-
 export async function addUser(name: string, handle: string, email: string) {
   await db.insert(Users).values({ name, handle, email });
 }
@@ -93,12 +90,46 @@ export async function addNoteToCollection(noteId: string, collectionId: string, 
   });
 }
 
-export async function deleteRecord(table: 'Users' | 'Notes' | 'Collections' | 'NotesCollections', id: string) {
+export async function deleteRecord(table: 'Users' | 'Notes' | 'Collections' | 'NotesCollections' | 'ShareLinks', id: string) {
   const tableMap = {
     Users,
     Notes,
     Collections,
     NotesCollections,
+    ShareLinks,
   };
   await db.delete(tableMap[table]).where(eq(tableMap[table].id, parseInt(id)));
+}
+
+export async function createNote(collectionId: string): Promise<Note> {
+  const user = await getCurrentUser();
+  if (!user) {
+    throw new Error("No user found");
+  } else {
+    console.log("user", user.id, "is making a note", user);
+  }
+
+  const now = new Date().toISOString();
+  await db.insert(Notes).values({
+    title: "Untitled",
+    content: "",
+    created_at: now,
+    updated_at: now,
+    user_id: parseInt(user.id),
+  })
+
+  const newNote = await db.select().from(Notes).orderBy(desc(Notes.id)).limit(1).then(rows => rows[0]);
+  console.log("new note", newNote);
+  if (!newNote || !newNote.id) {
+    throw new Error("Failed to create new note");
+  }
+
+  await addNoteToCollection(newNote.id.toString(), collectionId, user.id.toString());
+
+  return newNote as unknown as Note;
+}
+
+export async function deleteNote(noteId: string): Promise<void> {
+  await db.delete(NotesCollections).where(eq(NotesCollections.note_id, parseInt(noteId)));
+  await db.delete(Notes).where(eq(Notes.id, parseInt(noteId)));
 }

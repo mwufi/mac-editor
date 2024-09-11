@@ -1,18 +1,20 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Search, PenSquare, LayoutGrid, List, Trash } from "lucide-react";
 import { Note } from "../types";
 import { useAtom, useSetAtom } from "jotai";
 import { selectedCollectionIdAtom, collectionNotesAtom, selectedNoteIdAtom, initialContentAtom } from "@/app/atoms";
-import { getNotesInCollection } from "@/lib/orm";
+import { getNotesInCollection, createNote, deleteNote } from "@/lib/orm";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
 
 interface NoteItemProps {
     title: string;
     date: string;
     image?: string;
     onClick?: () => void;
-    isSelected: boolean; // Add this prop
+    isSelected: boolean;
 }
 
 const NoteItem = ({ title, date, image, onClick, isSelected }: NoteItemProps) => (
@@ -34,6 +36,8 @@ const NotesList = () => {
     const setInitialContent = useSetAtom(initialContentAtom);
     const [selectedCollectionId] = useAtom(selectedCollectionIdAtom);
     const [notes, setNotes] = useAtom(collectionNotesAtom);
+    const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+    const [noteToDelete, setNoteToDelete] = useState<Note | null>(null);
 
     useEffect(() => {
         const fetchNotes = async () => {
@@ -49,15 +53,48 @@ const NotesList = () => {
         fetchNotes();
     }, [selectedCollectionId, setNotes]);
 
+    const handleCreateNote = async () => {
+        if (selectedCollectionId) {
+            try {
+                const newNote = await createNote(selectedCollectionId);
+                setNotes([newNote, ...notes]);
+                setSelectedNoteId(newNote.id);
+                setInitialContent('');
+            } catch (error) {
+                console.error("Failed to create new note:", error);
+                // You might want to show an error message to the user here
+            }
+        }
+    };
+
+    const handleDeleteNote = async () => {
+        if (noteToDelete) {
+            await deleteNote(noteToDelete.id);
+            setNotes(notes.filter(note => note.id !== noteToDelete.id));
+            setSelectedNoteId(null);
+            setInitialContent('');
+            setIsDeleteDialogOpen(false);
+            setNoteToDelete(null);
+        }
+    };
+
+    const openDeleteDialog = (note: Note) => {
+        setNoteToDelete(note);
+        setIsDeleteDialogOpen(true);
+    };
+
     return (
         <div className="shrink-0 w-80 h-full bg-background dark:bg-gray-900 border-r border-border">
             <div className="p-4 border-b border-border">
                 <div className="flex items-center justify-between mb-4">
-                    <PenSquare size={20} className="text-gray-600 dark:text-gray-400" />
+                    <PenSquare
+                        size={20}
+                        className="text-gray-600 dark:text-gray-400 cursor-pointer hover:text-blue-500"
+                        onClick={handleCreateNote}
+                    />
                     <div className="flex space-x-2">
                         <LayoutGrid size={20} className="text-gray-600 dark:text-gray-400" />
                         <List size={20} className="text-gray-600 dark:text-gray-400" />
-                        <Trash size={20} className="text-gray-600 dark:text-gray-400" />
                     </div>
                 </div>
                 <div className="relative">
@@ -74,18 +111,42 @@ const NotesList = () => {
                     {selectedCollectionId ? `Notes in ${selectedCollectionId}` : 'Notes'}
                 </div>
                 {notes.map((note) => (
-                    <NoteItem
-                        key={note.id}
-                        title={note.title || ''}
-                        date={new Date(note.updated_at || '').toLocaleDateString()}
-                        onClick={() => {
-                            setSelectedNoteId(note.id);
-                            setInitialContent(note.content || '');
-                        }}
-                        isSelected={note.id === selectedNoteId}
-                    />
+                    <div key={note.id} className="flex items-center">
+                        <NoteItem
+                            title={note.title || ''}
+                            date={new Date(note.updated_at || '').toLocaleDateString()}
+                            onClick={() => {
+                                setSelectedNoteId(note.id);
+                                setInitialContent(note.content || '');
+                            }}
+                            isSelected={note.id === selectedNoteId}
+                        />
+                        <Trash
+                            size={20}
+                            className="text-gray-600 dark:text-gray-400 cursor-pointer hover:text-red-500 ml-2"
+                            onClick={() => openDeleteDialog(note)}
+                        />
+                    </div>
                 ))}
             </div>
+            <Dialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
+                <DialogContent>
+                    <DialogHeader>
+                        <DialogTitle>Are you sure you want to delete "{noteToDelete?.title}"?</DialogTitle>
+                        <DialogDescription>
+                            This action cannot be undone. This will permanently delete your note.
+                        </DialogDescription>
+                    </DialogHeader>
+                    <DialogFooter>
+                        <Button variant="outline" onClick={() => setIsDeleteDialogOpen(false)}>
+                            Cancel
+                        </Button>
+                        <Button variant="destructive" onClick={handleDeleteNote}>
+                            Delete
+                        </Button>
+                    </DialogFooter>
+                </DialogContent>
+            </Dialog>
         </div>
     );
 };

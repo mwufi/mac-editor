@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { toast } from "sonner"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { addUser, addNote, addCollection, addNoteToCollection, deleteRecord } from '@/lib/orm'
+import { addUser, addNote, addCollection, addNoteToCollection, deleteRecord, deleteNote } from '@/lib/orm'
 
 async function loadDatabase() {
   return await Database.load('sqlite:real.db')
@@ -68,7 +68,7 @@ export default function Page() {
       toast.message('Error', { description: 'All fields are required' });
       return;
     }
-    await addNote(db, newNote.title, newNote.content, currentUser);
+    await addNote(newNote.title, newNote.content, currentUser);
     fetchAllData(db).then(setData);
     setNewNote({ title: '', content: '', userId: '' });
     toast.success("Note added successfully");
@@ -159,7 +159,7 @@ export default function Page() {
                 <td>{user.name}</td>
                 <td>{user.handle}</td>
                 <td>{user.email}</td>
-                <td><Button onClick={() => handleDelete('users', user.id)}>Delete</Button></td>
+                <td><Button onClick={() => handleDelete('Users', user.id)}>Delete</Button></td>
               </tr>
             ))}
           </tbody>
@@ -194,7 +194,10 @@ export default function Page() {
                 <td>{new Date(note.created_at).toLocaleString()}</td>
                 <td>{new Date(note.updated_at).toLocaleString()}</td>
                 <td>{note.user_id}</td>
-                <td><Button onClick={() => handleDelete('notes', note.id)}>Delete</Button></td>
+                <td><Button onClick={async () => {
+                  await deleteNote(note.id)
+                  fetchAllData(db!).then(setData);
+                }}>Delete</Button></td>
               </tr>
             ))}
           </tbody>
@@ -229,7 +232,7 @@ export default function Page() {
                 <td>{new Date(collection.created_at).toLocaleString()}</td>
                 <td>{new Date(collection.updated_at).toLocaleString()}</td>
                 <td>{collection.user_id}</td>
-                <td><Button onClick={() => handleDelete('collections', collection.id)}>Delete</Button></td>
+                <td><Button onClick={() => handleDelete('Collections', collection.id)}>Delete</Button></td>
               </tr>
             ))}
           </tbody>
@@ -264,7 +267,7 @@ export default function Page() {
                 <td>{new Date(nc.created_at).toLocaleString()}</td>
                 <td>{new Date(nc.updated_at).toLocaleString()}</td>
                 <td>{nc.user_id}</td>
-                <td><Button onClick={() => handleDelete('notes_collections', nc.id)}>Delete</Button></td>
+                <td><Button onClick={() => handleDelete('NotesCollections', nc.id)}>Delete</Button></td>
               </tr>
             ))}
           </tbody>
@@ -294,7 +297,7 @@ export default function Page() {
                 <td>{new Date(link.created_at).toLocaleString()}</td>
                 <td>{new Date(link.updated_at).toLocaleString()}</td>
                 <td>{link.user_id}</td>
-                <td><Button onClick={() => handleDelete('share_links', link.id)}>Delete</Button></td>
+                <td><Button onClick={() => handleDelete('ShareLinks', link.id)}>Delete</Button></td>
               </tr>
             ))}
           </tbody>
