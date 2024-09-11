@@ -35,11 +35,18 @@ export default function Home() {
   }, [setCurrentUser, setCollections]);
 
   return (
-    <div className="flex h-full overflow-hidden bg-foreground dark:bg-gray-900 font-[family-name:var(--font-geist-sans)]">
-      <Sidebar />
-      {/* <LightNav /> */}
-      <NotesList />
-      <Editor />
-    </div>
+    <>
+      <div className="flex-1 flex overflow-hidden">
+        <div className="w-1/4 overflow-y-auto">
+          <Sidebar />
+        </div>
+        <div className="w-[300px] overflow-y-auto">
+          <NotesList />
+        </div>
+        <div className="flex-1 overflow-y-auto">
+          <Editor />
+        </div>
+      </div>
+    </>
   );
 }

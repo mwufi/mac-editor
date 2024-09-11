@@ -10,6 +10,7 @@
     "sql:allow-execute",
     "sql:allow-select",
     "sql:default",
-    "fs:default"
+    "fs:default",
+    "core:window:allow-start-dragging"
   ]
 }

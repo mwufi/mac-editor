@@ -57,7 +57,8 @@
         "height": 800,
         "resizable": true,
         "title": "Wordy",
-        "width": 1400
+        "width": 1400,
+        "titleBarStyle": "Overlay"
       }
     ],
     "security": {

@@ -1,1 +1,1 @@
-{"main-capability":{"identifier":"main-capability","description":"Capability for the main window","local":true,"windows":["main"],"permissions":["sql:allow-load","sql:allow-execute","sql:allow-select","sql:default","fs:default"]}}
+{"main-capability":{"identifier":"main-capability","description":"Capability for the main window","local":true,"windows":["main"],"permissions":["sql:allow-load","sql:allow-execute","sql:allow-select","sql:default","fs:default","core:window:allow-start-dragging"]}}

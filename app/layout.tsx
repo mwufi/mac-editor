@@ -25,9 +25,14 @@ export default function RootLayout({
       <JotaiProvider>
         <Toaster richColors position="top-right" />
         <body
-          className={`${inter.className} antialiased h-screen`}
+          className={`${inter.className} antialiased h-screen flex flex-col overflow-hidden`}
         >
-          {children}
+          <div data-tauri-drag-region className="titlebar bg-red-500 p-4">
+            hi there
+          </div>
+          <div className="flex-1 flex overflow-hidden">
+            {children}
+          </div>
           <TailwindSizeMarker />
         </body>
       </JotaiProvider>

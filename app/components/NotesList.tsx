@@ -83,7 +83,7 @@ const NotesList = () => {
     const selectedNote = notes.find(note => note.id === selectedNoteId);
 
     return (
-        <div className="shrink-0 w-80 h-full bg-white dark:bg-gray-900 border-r border-gray-200 dark:border-gray-700">
+        <div className="shrink-0 h-full bg-white dark:bg-gray-900 border-r border-gray-200 dark:border-gray-700">
             <div className="p-4 border-b border-gray-200 dark:border-gray-700">
                 <div className="flex items-center justify-between mb-4">
                     <PenSquare
