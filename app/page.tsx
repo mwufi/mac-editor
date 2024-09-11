@@ -42,6 +42,9 @@ export default function Home() {
         </div>
         <div className="w-[300px] overflow-y-auto">
           <NotesList />
+          <div data-tauri-drag-region className="h-10 bg-red-500 p-4">
+            hi there
+          </div>
         </div>
         <div className="flex-1 overflow-y-auto">
           <Editor />

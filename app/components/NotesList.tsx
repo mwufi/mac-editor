@@ -8,6 +8,7 @@ import { selectedCollectionIdAtom, collectionNotesAtom, selectedNoteIdAtom, init
 import { getNotesInCollection, createNote, deleteNote } from "@/lib/orm";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
+import { motion, AnimatePresence } from "framer-motion";
 
 interface NoteItemProps {
     title: string;
@@ -18,17 +19,29 @@ interface NoteItemProps {
 }
 
 const NoteItem = ({ title, date, image, onClick, isSelected }: NoteItemProps) => (
-    <div
-        className={`flex items-center justify-between py-2 px-4 group hover:bg-gray-100 dark:hover:bg-gray-800 ${isSelected ? 'bg-blue-100 dark:bg-blue-900' : ''
-            }`}
+    <motion.div
+        layout
+        className={`flex relative items-center justify-between py-3 px-4 mx-3 group rounded-lg cursor-pointer transition-colors duration-200`}
         onClick={onClick}
     >
-        <div>
+        <AnimatePresence>
+            {isSelected && (
+                <motion.div
+                    layoutId="selectedBackground"
+                    className="absolute inset-0 bg-red-100 dark:bg-gray-700 rounded-lg z-0"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 0.2 }}
+                />
+            )}
+        </AnimatePresence>
+        <div className="z-10">
             <h3 className="text-sm text-gray-800 dark:text-gray-200 group-hover:text-gray-900 dark:group-hover:text-gray-100 font-medium">{title}</h3>
             <p className="text-xs text-gray-600 dark:text-gray-400 group-hover:text-gray-700 dark:group-hover:text-gray-300">{date}</p>
         </div>
-        {image && <img src={image} alt={title} className="w-10 h-10 object-cover rounded" />}
-    </div>
+        {image && <img src={image} alt={title} className="w-10 h-10 object-cover rounded z-10" />}
+    </motion.div>
 );
 
 const NotesList = () => {
@@ -110,23 +123,25 @@ const NotesList = () => {
                     />
                 </div>
             </div>
-            <div className="overflow-y-auto h-[calc(100%-6rem)]">
+            <motion.div className="overflow-y-auto h-[calc(100%-6rem)]" layout>
                 <div className="py-2 px-4 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase">
                     {selectedCollectionId ? `Notes in ${selectedCollectionId}` : 'Notes'}
                 </div>
-                {notes.map((note) => (
-                    <NoteItem
-                        key={note.id}
-                        title={note.title || ''}
-                        date={new Date(note.updated_at || '').toLocaleDateString()}
-                        onClick={() => {
-                            setSelectedNoteId(note.id);
-                            setInitialContent(note.content || '');
-                        }}
-                        isSelected={note.id === selectedNoteId}
-                    />
-                ))}
-            </div>
+                <AnimatePresence>
+                    {notes.map((note) => (
+                        <NoteItem
+                            key={note.id}
+                            title={note.title || ''}
+                            date={new Date(note.updated_at || '').toLocaleDateString()}
+                            onClick={() => {
+                                setSelectedNoteId(note.id);
+                                setInitialContent(note.content || '');
+                            }}
+                            isSelected={note.id === selectedNoteId}
+                        />
+                    ))}
+                </AnimatePresence>
+            </motion.div>
             <Dialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
                 <DialogContent>
                     <DialogHeader>
