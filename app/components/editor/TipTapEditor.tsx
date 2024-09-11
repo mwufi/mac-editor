@@ -79,7 +79,7 @@ const TipTapEditor: React.FC<TipTapEditorProps> = ({ onUpdate, initialContent })
         content: null,
         editorProps: {
             attributes: {
-                class: `${libreBaskerville.className} h-full focus:outline-none`,
+                class: `h-full focus:outline-none`,
             },
         },
         editable: true,

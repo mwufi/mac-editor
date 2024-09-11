@@ -83,7 +83,7 @@ export default function Toolbar() {
                         getSelectionChain(editor).toggleBold().run();
                     }}
                     aria-label="Toggle bold"
-                    className="h-6 w-6"
+                    className="h-6 w-6 text-pink-500 bg-blue-500"
                 >
                     <Bold className="h-3 w-3" />
                 </Toggle>

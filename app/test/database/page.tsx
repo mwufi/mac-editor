@@ -190,7 +190,7 @@ export default function Page() {
               <tr key={note.id}>
                 <td>{note.id}</td>
                 <td>{note.title}</td>
-                <td>{note.content}</td>
+                <td>{note.content.substring(0, 50) + "..."}</td>
                 <td>{new Date(note.created_at).toLocaleString()}</td>
                 <td>{new Date(note.updated_at).toLocaleString()}</td>
                 <td>{note.user_id}</td>

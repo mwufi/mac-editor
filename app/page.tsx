@@ -9,6 +9,7 @@ import NotesList from "@/app/components/NotesList";
 import Editor from "@/app/components/Editor";
 import { getCurrentUser, getCollectionsWithNoteCount } from '@/lib/orm';
 import { Collection } from './types';
+import LightNav from './test/LightNav';
 
 export default function Home() {
   const [currentUser, setCurrentUser] = useAtom(currentUserAtom);
@@ -34,8 +35,9 @@ export default function Home() {
   }, [setCurrentUser, setCollections]);
 
   return (
-    <div className="flex h-full pt-4 overflow-hidden bg-foreground dark:bg-gray-900 font-[family-name:var(--font-geist-sans)]">
+    <div className="flex h-full overflow-hidden bg-foreground dark:bg-gray-900 font-[family-name:var(--font-geist-sans)]">
       <Sidebar />
+      {/* <LightNav /> */}
       <NotesList />
       <Editor />
     </div>
