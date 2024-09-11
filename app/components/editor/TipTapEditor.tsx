@@ -2,7 +2,7 @@
 
 import { useEffect } from 'react';
 
-import { Editor, EditorContent, useEditor as useTiptapEditor } from '@tiptap/react';
+import { EditorContent, JSONContent, useEditor as useTiptapEditor } from '@tiptap/react';
 import CharacterCount from '@tiptap/extension-character-count';
 import StarterKit from '@tiptap/starter-kit'
 import Youtube from '@tiptap/extension-youtube'
@@ -17,6 +17,11 @@ import TextStyle from '@tiptap/extension-text-style'
 import FontSize from 'tiptap-extension-font-size'
 import Underline from '@tiptap/extension-underline'
 import TextAlign from '@tiptap/extension-text-align'
+import Document from '@tiptap/extension-document'
+
+const CustomDocument = Document.extend({
+    content: 'heading block*',
+})
 
 import { useAtom } from 'jotai';
 import { editorAtom } from '@/app/atoms';
@@ -31,7 +36,7 @@ const libreBaskerville = Libre_Baskerville({
 });
 
 interface TipTapEditorProps {
-    onUpdate: (contentAsHtml: string, contentAsText: string) => void;
+    onUpdate: (contentAsJson: JSONContent, contentAsText: string) => void;
     initialContent: string | null;
 }
 
@@ -40,7 +45,10 @@ const TipTapEditor: React.FC<TipTapEditorProps> = ({ onUpdate, initialContent })
 
     const editor = useTiptapEditor({
         extensions: [
-            StarterKit,
+            CustomDocument,      
+            StarterKit.configure({
+                document: false,
+            }),
             Placeholder.configure({
                 placeholder: 'Write your note here...',
             }),
@@ -88,9 +96,9 @@ const TipTapEditor: React.FC<TipTapEditorProps> = ({ onUpdate, initialContent })
             setEditor(editor); // Set the editor in the context when it's created
 
             const handleUpdate = () => {
-                const contentAsHtml = editor.getJSON();
+                const contentAsJSON = editor.getJSON();
                 const contentAsText = editor.getText();
-                onUpdate(contentAsHtml, contentAsText);
+                onUpdate(contentAsJSON, contentAsText);
             };
 
             editor.on('update', handleUpdate);

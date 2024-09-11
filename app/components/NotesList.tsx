@@ -17,7 +17,7 @@ interface NoteItemProps {
 
 const NoteItem = ({ title, date, image, onClick, isSelected }: NoteItemProps) => (
     <div
-        className={`flex items-center justify-between py-2 px-4 group hover:bg-accent dark:hover:bg-gray-800 ${isSelected ? 'bg-accent text-accent-foreground' : ''
+        className={`flex items-center justify-between py-2 px-4 group hover:bg-accent dark:hover:bg-gray-800 ${isSelected ? 'bg-pink-700' : ''
             }`}
         onClick={onClick}
     >
@@ -50,8 +50,8 @@ const NotesList = () => {
     }, [selectedCollectionId, setNotes]);
 
     return (
-        <div className="shrink-0 w-80 h-full bg-background dark:bg-gray-900 border-r border-gray-200 dark:border-gray-700">
-            <div className="p-4 border-b border-gray-200 dark:border-gray-700">
+        <div className="shrink-0 w-80 h-full bg-background dark:bg-gray-900 border-r border-border">
+            <div className="p-4 border-b border-border">
                 <div className="flex items-center justify-between mb-4">
                     <PenSquare size={20} className="text-gray-600 dark:text-gray-400" />
                     <div className="flex space-x-2">
@@ -65,7 +65,7 @@ const NotesList = () => {
                     <input
                         type="text"
                         placeholder="Search notes"
-                        className="w-full pl-10 pr-4 py-2 bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        className="w-full pl-10 pr-4 py-2 bg-gray-100 dark:bg-gray-800 border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                     />
                 </div>
             </div>

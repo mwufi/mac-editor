@@ -27,9 +27,25 @@
 }
 
 .tiptap a {
-    @apply text-blue-400 hover:text-blue-500 cursor-pointer;
+    @apply text-pink-400 underline hover:text-pink-500 cursor-pointer;
 }
 
 .tiptap img {
     @apply mb-1;
+}
+
+.tiptap p.is-editor-empty:first-child::before {
+    color: #adb5bd;
+    content: attr(data-placeholder);
+    float: left;
+    height: 0;
+    pointer-events: none;
+}
+
+.tiptap h1.is-editor-empty:first-child::before {
+    color: #adb5bd;
+    content: attr(data-placeholder);
+    float: left;
+    height: 0;
+    pointer-events: none;
 }
