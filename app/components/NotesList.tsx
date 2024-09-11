@@ -5,7 +5,7 @@ import { Search, PenSquare, LayoutGrid, List, Trash } from "lucide-react";
 import { Note } from "../types";
 import { useAtom, useSetAtom } from "jotai";
 import { selectedCollectionIdAtom, collectionNotesAtom, selectedNoteIdAtom, initialContentAtom } from "@/app/atoms";
-import { getNotesInCollection, loadDatabase } from "@/lib/orm";
+import { getNotesInCollection } from "@/lib/orm";
 
 interface NoteItemProps {
     title: string;
@@ -39,16 +39,16 @@ const NotesList = () => {
     useEffect(() => {
         const fetchNotes = async () => {
             if (selectedCollectionId) {
-                const db = await loadDatabase();
-                const collectionNotes = await getNotesInCollection(db, selectedCollectionId);
-                setNotes(collectionNotes as Note[]);
+                const collectionNotes = await getNotesInCollection(selectedCollectionId);
+                console.log("collectionNotes", collectionNotes);
+                setNotes(collectionNotes as unknown as Note[]);
             } else {
                 setNotes([]);
             }
         };
 
         fetchNotes();
-    }, [selectedCollectionId]);
+    }, [selectedCollectionId, setNotes]);
 
     return (
         <div className="shrink-0 w-80 h-full bg-white dark:bg-gray-900 border-r border-gray-200 dark:border-gray-700">
@@ -77,11 +77,11 @@ const NotesList = () => {
                 {notes.map((note) => (
                     <NoteItem
                         key={note.id}
-                        title={note.title}
-                        date={new Date(note.updated_at).toLocaleDateString()}
+                        title={note.title || ''}
+                        date={new Date(note.updated_at || '').toLocaleDateString()}
                         onClick={() => {
                             setSelectedNoteId(note.id);
-                            setInitialContent(note.content);
+                            setInitialContent(note.content || '');
                         }}
                         isSelected={note.id === selectedNoteId}
                     />

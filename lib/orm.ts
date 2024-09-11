@@ -1,18 +1,18 @@
 'use client'
 
-import { User } from '@/app/types';
-import Database from '@tauri-apps/plugin-sql'
+import { Collection, User } from '@/app/types';
+import { db } from './db';
+import { Users, Notes, Collections, NotesCollections } from './schema';
+import { eq, and, sql } from 'drizzle-orm';
 
-export async function loadDatabase() {
-  return await Database.load('sqlite:real.db')
-}
+// Remove loadDatabase function as it's no longer needed
 
-export async function getCurrentUser(db: Database): Promise<User | null> {
+export async function getCurrentUser(): Promise<User | null> {
   try {
-    const users = await db.select<User[]>("SELECT * FROM users LIMIT 1");
+    const users = await db.select().from(Users).limit(1);
     if (users.length > 0) {
       console.log("got users", users);
-      return users[0];
+      return users[0] as unknown as User;
     } else {
       console.warn("No users found in the database");
       return null;
@@ -23,75 +23,82 @@ export async function getCurrentUser(db: Database): Promise<User | null> {
   }
 }
 
-export async function saveNoteContent(db: Database, noteId: string, content: string, title: string) {
+export async function saveNoteContent(noteId: string, content: string, title: string) {
   const now = new Date().toISOString();
   console.log("saving note content", noteId, content, title);
-  await db.execute(
-    "UPDATE notes SET content = $1, title = $2, updated_at = $3 WHERE id = $4",
-    [content, title, now, noteId]
-  );
+  await db.update(Notes)
+    .set({ content, title, updated_at: now })
+    .where(eq(Notes.id, parseInt(noteId)));
 }
 
-export async function getCollectionsWithNoteCount(db: Database, userId: string) {
-  const query = `
-    SELECT 
-      c.id, 
-      c.name, 
-      c.description, 
-      COUNT(nc.note_id) as note_count
-    FROM 
-      collections c
-    LEFT JOIN 
-      notes_collections nc ON c.id = nc.collection_id
-    WHERE 
-      c.user_id = $1
-    GROUP BY 
-      c.id
-    ORDER BY 
-      c.name
-  `;
-
-  return await db.select(query, [userId]);
+export async function getCollectionsWithNoteCount(userId: string): Promise<Collection[]> {
+  const collections = await db.select({
+    id: Collections.id,
+    name: Collections.name,
+    description: Collections.description,
+    note_count: sql<number>`count(${NotesCollections.note_id})`.as('note_count'),
+  })
+    .from(Collections)
+    .leftJoin(NotesCollections, eq(Collections.id, NotesCollections.collection_id))
+    .where(eq(Collections.user_id, parseInt(userId)))
+    .groupBy(Collections.id)
+    .orderBy(Collections.name);
+  return collections;
 }
 
-export async function getNotesInCollection(db: Database, collectionId: string) {
-  const query = `
-    SELECT * FROM notes WHERE id IN (SELECT note_id FROM notes_collections WHERE collection_id = $1)
-  `;
-  return await db.select(query, [collectionId]);
+export async function getNotesInCollection(collectionId: string) {
+  return await db.query.NotesCollections.findMany({
+    where: eq(NotesCollections.collection_id, parseInt(collectionId)),
+    with: {
+      note: true
+    }
+  }).then(results => results.map(result => result.note));
 }
 
-export async function addUser(db: Database, name: string, handle: string, email: string) {
-  await db.execute(
-    "INSERT INTO users (name, handle, email) VALUES ($1, $2, $3)",
-    [name, handle, email]
-  );
+
+export async function addUser(name: string, handle: string, email: string) {
+  await db.insert(Users).values({ name, handle, email });
 }
 
-export async function addNote(db: Database, title: string, content: string, userId: string) {
+export async function addNote(title: string, content: string, userId: string) {
   const now = new Date().toISOString();
-  await db.execute(
-    "INSERT INTO notes (title, content, created_at, updated_at, user_id) VALUES ($1, $2, $3, $4, $5)",
-    [title, content, now, now, userId]
-  );
+  await db.insert(Notes).values({
+    title,
+    content,
+    created_at: now,
+    updated_at: now,
+    user_id: parseInt(userId),
+  });
 }
 
-export async function addCollection(db: Database, name: string, description: string, userId: string) {
+export async function addCollection(name: string, description: string, userId: string) {
   const now = new Date().toISOString();
-  await db.execute(
-    "INSERT INTO collections (name, description, created_at, updated_at, user_id) VALUES ($1, $2, $3, $4, $5)",
-    [name, description, now, now, userId]
-  );
+  await db.insert(Collections).values({
+    name,
+    description,
+    created_at: now,
+    updated_at: now,
+    user_id: parseInt(userId),
+  });
 }
 
-export async function addNoteToCollection(db: Database, noteId: string, collectionId: string, userId: string) {
+export async function addNoteToCollection(noteId: string, collectionId: string, userId: string) {
   const now = new Date().toISOString();
-  await db.execute(
-    "INSERT INTO notes_collections (note_id, collection_id, created_at, updated_at, user_id) VALUES ($1, $2, $3, $4, $5)",
-    [noteId, collectionId, now, now, userId]
-  );
+  await db.insert(NotesCollections).values({
+    note_id: parseInt(noteId),
+    collection_id: parseInt(collectionId),
+    created_at: now,
+    updated_at: now,
+    user_id: parseInt(userId),
+  });
 }
 
-export async function deleteRecord(db: Database, table: string, id: string) {
-  await db.execute(`DELETE FROM ${table} WHERE id = $1`, [id]);
+export async function deleteRecord(table: 'Users' | 'Notes' | 'Collections' | 'NotesCollections', id: string) {
+  const tableMap = {
+    Users,
+    Notes,
+    Collections,
+    NotesCollections,
+  };
+  await db.delete(tableMap[table]).where(eq(tableMap[table].id, parseInt(id)));
 }

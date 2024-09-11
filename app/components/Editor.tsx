@@ -4,7 +4,7 @@ import { useAtom, useAtomValue, useSetAtom } from "jotai";
 import { editorAtom, lastSavedContentAtom, selectedNoteAtom, currentContentAtom, updateContentAtom, updateTitleAtom, initialContentAtom, selectedNoteIdAtom } from "../atoms";
 import TipTapEditor from "./editor/TipTapEditor";
 import { useEffect, useCallback, useMemo, useState } from "react";
-import { loadDatabase, saveNoteContent } from "@/lib/orm";
+import { saveNoteContent } from "@/lib/orm";
 import { useDebounce } from "@/app/hooks/useDebounce";
 
 const Editor = () => {
@@ -19,7 +19,6 @@ const Editor = () => {
     const [latest, setLatest] = useState<string | null>(null);
 
     const saveContent = useCallback(async (contentAsHtml: string, contentAsText: string) => {
-        const db = await loadDatabase();
         const currentSelectedNoteId = selectedNoteId; // Get the latest selectedNoteId
         setLatest(currentSelectedNoteId);
 
@@ -29,7 +28,7 @@ const Editor = () => {
         updateSelectedNoteTitle(newTitle);
 
         if (currentSelectedNoteId) {
-            await saveNoteContent(db, currentSelectedNoteId, contentAsHtml, newTitle);
+            await saveNoteContent(currentSelectedNoteId, contentAsHtml, newTitle);
             setLastSavedContent(contentAsHtml);
             updateSelectedNoteContent(contentAsHtml);
         } else {
