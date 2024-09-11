@@ -37,7 +37,6 @@ const NotesList = () => {
     const [selectedCollectionId] = useAtom(selectedCollectionIdAtom);
     const [notes, setNotes] = useAtom(collectionNotesAtom);
     const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
-    const [noteToDelete, setNoteToDelete] = useState<Note | null>(null);
 
     useEffect(() => {
         const fetchNotes = async () => {
@@ -68,20 +67,20 @@ const NotesList = () => {
     };
 
     const handleDeleteNote = async () => {
-        if (noteToDelete) {
-            await deleteNote(noteToDelete.id);
-            setNotes(notes.filter(note => note.id !== noteToDelete.id));
+        if (selectedNoteId) {
+            await deleteNote(selectedNoteId);
+            setNotes(notes.filter(note => note.id !== selectedNoteId));
             setSelectedNoteId(null);
             setInitialContent('');
             setIsDeleteDialogOpen(false);
-            setNoteToDelete(null);
         }
     };
 
-    const openDeleteDialog = (note: Note) => {
-        setNoteToDelete(note);
+    const openDeleteDialog = () => {
         setIsDeleteDialogOpen(true);
     };
+
+    const selectedNote = notes.find(note => note.id === selectedNoteId);
 
     return (
         <div className="shrink-0 w-80 h-full bg-background dark:bg-gray-900 border-r border-border">
@@ -95,6 +94,11 @@ const NotesList = () => {
                     <div className="flex space-x-2">
                         <LayoutGrid size={20} className="text-gray-600 dark:text-gray-400" />
                         <List size={20} className="text-gray-600 dark:text-gray-400" />
+                        <Trash
+                            size={20}
+                            className="text-gray-600 dark:text-gray-400 cursor-pointer hover:text-red-500"
+                            onClick={openDeleteDialog}
+                        />
                     </div>
                 </div>
                 <div className="relative">
@@ -111,28 +115,22 @@ const NotesList = () => {
                     {selectedCollectionId ? `Notes in ${selectedCollectionId}` : 'Notes'}
                 </div>
                 {notes.map((note) => (
-                    <div key={note.id} className="flex items-center">
-                        <NoteItem
-                            title={note.title || ''}
-                            date={new Date(note.updated_at || '').toLocaleDateString()}
-                            onClick={() => {
-                                setSelectedNoteId(note.id);
-                                setInitialContent(note.content || '');
-                            }}
-                            isSelected={note.id === selectedNoteId}
-                        />
-                        <Trash
-                            size={20}
-                            className="text-gray-600 dark:text-gray-400 cursor-pointer hover:text-red-500 ml-2"
-                            onClick={() => openDeleteDialog(note)}
-                        />
-                    </div>
+                    <NoteItem
+                        key={note.id}
+                        title={note.title || ''}
+                        date={new Date(note.updated_at || '').toLocaleDateString()}
+                        onClick={() => {
+                            setSelectedNoteId(note.id);
+                            setInitialContent(note.content || '');
+                        }}
+                        isSelected={note.id === selectedNoteId}
+                    />
                 ))}
             </div>
             <Dialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
                 <DialogContent>
                     <DialogHeader>
-                        <DialogTitle>Are you sure you want to delete "{noteToDelete?.title}"?</DialogTitle>
+                        <DialogTitle>Are you sure you want to delete "{selectedNote?.title}"?</DialogTitle>
                         <DialogDescription>
                             This action cannot be undone. This will permanently delete your note.
                         </DialogDescription>
