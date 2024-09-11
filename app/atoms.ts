@@ -50,3 +50,6 @@ export const editorAtom = atom<Editor | null>(null);
 export const dialogOpenAtom = atom(false);
 
 export const currentUserAtom = atom<User | null>(null);
+
+// UI
+export const sidebarOpenAtom = atom(true); // Default to open

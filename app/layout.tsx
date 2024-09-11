@@ -7,6 +7,7 @@ import "./headermenu.css";
 import { Inter } from 'next/font/google';
 import { Toaster } from "sonner";
 import TailwindSizeMarker from "./components/dev/TailwindSizeMarker";
+import ToggleSidebarIcon from "./ToggleSidebarIcon";
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -20,6 +21,7 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+
   return (
     <html lang="en">
       <JotaiProvider>
@@ -27,9 +29,7 @@ export default function RootLayout({
         <body
           className={`${inter.className} antialiased h-screen flex flex-col overflow-hidden`}
         >
-          <div data-tauri-drag-region className="titlebar bg-red-500 p-4">
-            hi there
-          </div>
+          <ToggleSidebarIcon />
           <div className="flex-1 flex overflow-hidden">
             {children}
           </div>

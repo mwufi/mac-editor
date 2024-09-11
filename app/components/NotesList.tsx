@@ -1,10 +1,10 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Search, PenSquare, LayoutGrid, List, Trash } from "lucide-react";
+import { Search, PenSquare, LayoutGrid, List, Trash, Settings, PanelRight } from "lucide-react";
 import { Note } from "../types";
 import { useAtom, useSetAtom } from "jotai";
-import { selectedCollectionIdAtom, collectionNotesAtom, selectedNoteIdAtom, initialContentAtom } from "@/app/atoms";
+import { selectedCollectionIdAtom, collectionNotesAtom, selectedNoteIdAtom, initialContentAtom, sidebarOpenAtom } from "@/app/atoms";
 import { getNotesInCollection, createNote, deleteNote } from "@/lib/orm";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
@@ -94,11 +94,12 @@ const NotesList = () => {
     };
 
     const selectedNote = notes.find(note => note.id === selectedNoteId);
-
+    const [sidebarOpen, setSidebarOpen] = useAtom(sidebarOpenAtom);
     return (
         <div className="shrink-0 h-full bg-white dark:bg-gray-900 border-r border-gray-200 dark:border-gray-700">
             <div className="p-4 border-b border-gray-200 dark:border-gray-700">
-                <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center justify-between mb-4" data-tauri-drag-region>
+                    <div className="w-36" /> {/* Placeholder for Sun icon */}
                     <PenSquare
                         size={20}
                         className="text-gray-600 dark:text-gray-400 cursor-pointer hover:text-blue-500"
