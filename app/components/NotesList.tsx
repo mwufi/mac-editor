@@ -16,15 +16,14 @@ interface NoteItemProps {
 }
 
 const NoteItem = ({ title, date, image, onClick, isSelected }: NoteItemProps) => (
-    <div 
-        className={`flex items-center justify-between py-2 px-4 hover:bg-gray-100 dark:hover:bg-gray-800 ${
-            isSelected ? 'bg-gray-200 dark:bg-gray-700' : ''
-        }`} 
+    <div
+        className={`flex items-center justify-between py-2 px-4 group hover:bg-accent dark:hover:bg-gray-800 ${isSelected ? 'bg-accent text-accent-foreground' : ''
+            }`}
         onClick={onClick}
     >
         <div>
-            <h3 className="text-sm font-medium">{title}</h3>
-            <p className="text-xs text-gray-500 dark:text-gray-400">{date}</p>
+            <h3 className="text-sm text-accent group-hover:text-accent-foreground font-medium">{title}</h3>
+            <p className="text-xs text-accent group-hover:text-accent-foreground dark:text-gray-400">{date}</p>
         </div>
         {image && <img src={image} alt={title} className="w-10 h-10 object-cover rounded" />}
     </div>
@@ -51,7 +50,7 @@ const NotesList = () => {
     }, [selectedCollectionId, setNotes]);
 
     return (
-        <div className="shrink-0 w-80 h-full bg-white dark:bg-gray-900 border-r border-gray-200 dark:border-gray-700">
+        <div className="shrink-0 w-80 h-full bg-background dark:bg-gray-900 border-r border-gray-200 dark:border-gray-700">
             <div className="p-4 border-b border-gray-200 dark:border-gray-700">
                 <div className="flex items-center justify-between mb-4">
                     <PenSquare size={20} className="text-gray-600 dark:text-gray-400" />
