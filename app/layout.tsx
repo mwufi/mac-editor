@@ -23,11 +23,11 @@ export default function RootLayout({
 }>) {
 
   return (
-    <html lang="en">
+    <html lang="en" className="bg-black">
       <JotaiProvider>
         <Toaster richColors position="top-right" />
         <body
-          className={`${inter.className} antialiased h-screen flex flex-col overflow-hidden`}
+          className={`${inter.className} antialiased h-screen flex flex-col overflow-hidden rounded-lg bg-white`}
         >
           {/* <ToggleSidebarIcon /> */}
           <div className="flex-1 flex overflow-hidden">
