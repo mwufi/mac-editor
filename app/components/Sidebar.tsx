@@ -52,7 +52,7 @@ const Sidebar = () => {
             <div className="pt-10" data-tauri-drag-region>
             </div>
             <div className="space-y-2">
-                <SidebarItem icon={LayoutDashboard} label="Dashboard" href="/test/tauri" />
+                <SidebarItem icon={LayoutDashboard} label="Dashboard" href="/test/layout" />
                 <SidebarItem icon={Star} label="Starred" count={31} />
                 <SidebarItem icon={Archive} label="Archive" count={216} />
                 <SidebarItem icon={Trash2} label="Deleted" count={12} />
