@@ -60,7 +60,7 @@ const Editor = () => {
 
     const editorContent = useMemo(() => {
         if (!selectedNote) {
-            return <div>No note selected</div>;
+            return <div className="flex-1 h-full w-full grid place-items-center dark:bg-gray-900 px-8 overflow-y-auto">No note selected</div>;
         }
 
         return (

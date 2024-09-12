@@ -36,7 +36,8 @@ export default function Toolbar() {
         const updateToolbar = () => {
             const attrs = editor.getAttributes('textStyle');
             setFontSize(attrs.fontSize ? attrs.fontSize.replace('pt', '') : '16');
-            setFontFamily(attrs.fontFamily || '');
+            setFontFamily(attrs.fontFamily || 'Playfair Display');
+            console.log("font family", attrs.fontFamily);
             setIsBold(editor.isActive('bold'));
             setIsItalic(editor.isActive('italic'));
             setIsUnderline(editor.isActive('underline'));
@@ -57,7 +58,7 @@ export default function Toolbar() {
     if (!editor) return null;
 
     return (
-        <div className="w-full flex flex-row gap-2 h-12 items-center">
+        <div data-tauri-drag-region className="w-full flex flex-row gap-2 h-12 items-center">
             <ButtonGroup>
                 <Select value={fontFamily} onValueChange={(value) => {
                     setFontFamily(value);
@@ -67,7 +68,7 @@ export default function Toolbar() {
                         <SelectValue placeholder="Select a font" />
                     </SelectTrigger>
                     <SelectContent>
-                        <SelectItem value="Inter">Inter</SelectItem>
+                        <SelectItem value="Playfair Display">Playfair Display</SelectItem>
                         <SelectItem value="Comic Sans MS, Comic Sans">Comic Sans</SelectItem>
                         <SelectItem value="serif">Serif</SelectItem>
                         <SelectItem value="monospace">Monospace</SelectItem>
