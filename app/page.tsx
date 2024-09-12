@@ -42,7 +42,7 @@ export default function Home() {
           {sidebarOpen && (
             <motion.div
               initial={{ width: 0, opacity: 0 }}
-              animate={{ width: "25%", opacity: 1 }}
+              animate={{ width: "230px", opacity: 1 }}
               exit={{ width: 0, opacity: 0 }}
               transition={{ duration: 0.3 }}
               className="overflow-y-auto"
