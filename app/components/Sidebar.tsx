@@ -16,7 +16,7 @@ const SidebarItem = ({ icon: Icon, label, count, href = "#", onClick, selected }
     return (
         <div className="relative group">
             <Link href={href} className={`flex w-full items-center gap-2 px-4 py-2 text-sm text-gray-700 dark:text-gray-300 rounded-md ${selected ? "bg-gray-100 dark:bg-gray-800" : ""}`} onClick={onClick}>
-                <Icon size={18} className="text-red-400" fill="currentColor" />
+                <Icon size={18} className="text-accent" fill="currentColor" />
                 <span className="flex-grow">{label}</span>
                 {count !== undefined && <span className="bg-gray-200 dark:bg-gray-700 text-xs font-medium px-2 py-0.5 rounded-full">{count}</span>}
             </Link>

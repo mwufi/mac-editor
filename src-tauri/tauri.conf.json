@@ -58,7 +58,8 @@
         "resizable": true,
         "title": "Wordy",
         "width": 1400,
-        "titleBarStyle": "Overlay"
+        "titleBarStyle": "Overlay",
+        "hiddenTitle": true
       }
     ],
     "security": {

@@ -26,7 +26,7 @@ const NoteItem = ({ title, date, image, onClick, isSelected }: NoteItemProps) =>
             {isSelected && (
                 <motion.div
                     layoutId="selectedBackground"
-                    className="absolute inset-0 bg-red-100 dark:bg-gray-700 rounded-lg z-0"
+                    className="absolute inset-0 bg-accent dark:bg-gray-700 rounded-lg z-0"
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}

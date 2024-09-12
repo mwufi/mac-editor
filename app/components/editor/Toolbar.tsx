@@ -36,7 +36,7 @@ export default function Toolbar() {
         const updateToolbar = () => {
             const attrs = editor.getAttributes('textStyle');
             setFontSize(attrs.fontSize ? attrs.fontSize.replace('pt', '') : '16');
-            setFontFamily(attrs.fontFamily || 'Playfair Display');
+            setFontFamily(attrs.fontFamily || 'Inter');
             console.log("font family", attrs.fontFamily);
             setIsBold(editor.isActive('bold'));
             setIsItalic(editor.isActive('italic'));
@@ -68,7 +68,7 @@ export default function Toolbar() {
                         <SelectValue placeholder="Select a font" />
                     </SelectTrigger>
                     <SelectContent>
-                        <SelectItem value="Playfair Display">Playfair Display</SelectItem>
+                        <SelectItem value="Inter">Inter</SelectItem>
                         <SelectItem value="Comic Sans MS, Comic Sans">Comic Sans</SelectItem>
                         <SelectItem value="serif">Serif</SelectItem>
                         <SelectItem value="monospace">Monospace</SelectItem>

@@ -1,44 +1,55 @@
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
 
-.tiptap {
-    font-family: 'Playfair Display', serif;
+/* spacing */
+:root {
+    --paragraph-spacing: 0.8rem;
+    --heading-spacing: 1.2em;
+    --list-spacing: 1em;
+    --item-spacing: 0.1em;
 }
 
+.tiptap {
+    font-family: 'Inter', sans-serif;
+}
 
 .tiptap h1 {
-    @apply text-4xl font-bold leading-tight mb-6;
+    @apply text-4xl font-bold leading-tight;
+    margin-block-start: 1em;
 }
 
 .tiptap h2 {
-    @apply text-3xl font-semibold leading-snug mb-5;
+    @apply text-3xl font-semibold leading-snug;
+    margin-block-start: 1em;
 }
 
 .tiptap h3 {
-    @apply text-2xl font-medium leading-normal mb-4;
+    @apply text-2xl font-medium leading-normal;
+    margin-block-start: 1em;
 }
 
 .tiptap p {
-    @apply text-lg leading-relaxed mb-1;
+    @apply leading-relaxed mb-[var(--paragraph-spacing)];
+    margin-block-start: 1em;
 }
 
 .tiptap ul {
-    @apply list-disc pl-4;
+    @apply list-disc pl-4 mb-[var(--list-spacing)];
 }
 
 .tiptap ol {
-    @apply list-decimal pl-4;
+    @apply list-decimal pl-4 mb-[var(--list-spacing)];
 }
 
 .tiptap li {
-    @apply mb-1;
+    @apply mb-[var(--item-spacing)];
 }
 
 .tiptap a {
-    @apply text-pink-400 underline hover:text-pink-500 cursor-pointer;
+    @apply text-accent-darker underline cursor-pointer;
 }
 
 .tiptap img {
-    @apply mb-1;
+    @apply mb-[var(--item-spacing)];
 }
 
 .tiptap p.is-editor-empty:first-child::before {
