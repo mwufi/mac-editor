@@ -1,13 +1,11 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Search, PenSquare, LayoutGrid, List, Trash, Settings, PanelRight } from "lucide-react";
+import { Search } from "lucide-react";
 import { Note } from "../types";
 import { useAtom, useSetAtom } from "jotai";
-import { selectedCollectionIdAtom, collectionNotesAtom, selectedNoteIdAtom, initialContentAtom, sidebarOpenAtom } from "@/app/atoms";
-import { getNotesInCollection, createNote, deleteNote } from "@/lib/orm";
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
+import { selectedCollectionIdAtom, collectionNotesAtom, selectedNoteIdAtom, initialContentAtom } from "@/app/atoms";
+import { getNotesInCollection, deleteNote } from "@/lib/orm";
 import { motion, AnimatePresence } from "framer-motion";
 
 interface NoteItemProps {
@@ -65,19 +63,6 @@ const NotesList = () => {
         fetchNotes();
     }, [selectedCollectionId, setNotes]);
 
-    const handleCreateNote = async () => {
-        if (selectedCollectionId) {
-            try {
-                const newNote = await createNote(selectedCollectionId);
-                setNotes([newNote, ...notes]);
-                setSelectedNoteId(newNote.id);
-                setInitialContent('');
-            } catch (error) {
-                console.error("Failed to create new note:", error);
-                // You might want to show an error message to the user here
-            }
-        }
-    };
 
     const handleDeleteNote = async () => {
         if (selectedNoteId) {
@@ -94,27 +79,10 @@ const NotesList = () => {
     };
 
     const selectedNote = notes.find(note => note.id === selectedNoteId);
-    const [sidebarOpen, setSidebarOpen] = useAtom(sidebarOpenAtom);
+
     return (
-        <div className="shrink-0 h-full bg-white dark:bg-gray-900 border-r border-gray-200 dark:border-gray-700">
-            <div className="p-4 border-b border-gray-200 dark:border-gray-700">
-                <div className="flex items-center justify-between mb-4" data-tauri-drag-region>
-                    <div className="w-36" /> {/* Placeholder for Sun icon */}
-                    <PenSquare
-                        size={20}
-                        className="text-gray-600 dark:text-gray-400 cursor-pointer hover:text-blue-500"
-                        onClick={handleCreateNote}
-                    />
-                    <div className="flex space-x-2">
-                        <LayoutGrid size={20} className="text-gray-600 dark:text-gray-400" />
-                        <List size={20} className="text-gray-600 dark:text-gray-400" />
-                        <Trash
-                            size={20}
-                            className="text-gray-600 dark:text-gray-400 cursor-pointer hover:text-red-500"
-                            onClick={openDeleteDialog}
-                        />
-                    </div>
-                </div>
+        <div className="shrink-0 h-full bg-white">
+            <div className="p-4">
                 <div className="relative">
                     <Search size={20} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
                     <input
@@ -143,24 +111,6 @@ const NotesList = () => {
                     ))}
                 </AnimatePresence>
             </motion.div>
-            <Dialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
-                <DialogContent>
-                    <DialogHeader>
-                        <DialogTitle>Are you sure you want to delete "{selectedNote?.title}"?</DialogTitle>
-                        <DialogDescription>
-                            This action cannot be undone. This will permanently delete your note.
-                        </DialogDescription>
-                    </DialogHeader>
-                    <DialogFooter>
-                        <Button variant="outline" onClick={() => setIsDeleteDialogOpen(false)}>
-                            Cancel
-                        </Button>
-                        <Button variant="destructive" onClick={handleDeleteNote}>
-                            Delete
-                        </Button>
-                    </DialogFooter>
-                </DialogContent>
-            </Dialog>
         </div>
     );
 };

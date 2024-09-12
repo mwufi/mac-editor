@@ -48,9 +48,7 @@ const Sidebar = () => {
     const sidebarOpen = useAtomValue(sidebarOpenAtom);
 
     return (
-        <div className={`shrink-0 ${!sidebarOpen && "fixed"} h-full overflow-y-auto bg-gray-50 dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 p-4`}>
-            <div className="pt-10" data-tauri-drag-region>
-            </div>
+        <div className={`shrink-0 ${!sidebarOpen && "fixed"} h-full overflow-y-auto bg-gray-50 dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 p-2`}>
             <div className="space-y-2">
                 <SidebarItem icon={LayoutDashboard} label="Dashboard" href="/test/layout" />
                 <SidebarItem icon={Star} label="Starred" count={31} />

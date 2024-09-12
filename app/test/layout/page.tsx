@@ -1,13 +1,44 @@
 'use client'
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronLeft, ChevronRight, Pencil, Trash2 } from 'lucide-react';
+import { ChevronRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import Sidebar from '@/app/components/Sidebar';
+import { Collection } from '@/app/types';
+import { getCurrentUser, getCollectionsWithNoteCount } from '@/lib/orm';
+import { currentUserAtom, collectionsAtom } from '@/app/atoms';
+import { useAtom } from 'jotai';
+import NotesList from '@/app/components/NotesList';
+import Editor from '@/app/components/Editor';
+import HeaderToolbar from '@/app/components/toolbars/HeaderToolbar';
+import CreateNoteButton from '@/app/components/toolbars/CreateNoteButton';
+import TrashNoteButton from '@/app/components/toolbars/TrashNoteButton';
 
 export default function Layout() {
-  const [sidebarOpen, setSidebarOpen] = useState(true);
-  const [selectedItem, setSelectedItem] = useState<number | null>(null);
+  // TODO: if you use atom value, it doesn't re-render properly!! something with motion.div
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [currentUser, setCurrentUser] = useAtom(currentUserAtom);
+  const [collections, setCollections] = useAtom(collectionsAtom);
+
+  useEffect(() => {
+    async function initializeData() {
+      try {
+        const user = await getCurrentUser();
+        setCurrentUser(user);
+
+        if (user) {
+          const userCollections = await getCollectionsWithNoteCount(user.id.toString());
+          console.log("collections", userCollections);
+          setCollections(userCollections as unknown as Collection[]);
+        }
+      } catch (error) {
+        console.error("Error initializing data:", error);
+      }
+    }
+
+    initializeData();
+  }, [setCurrentUser, setCollections]);
 
   const toggleSidebar = () => {
     setSidebarOpen(!sidebarOpen);
@@ -22,7 +53,7 @@ export default function Layout() {
   ];
 
   return (
-    <div className="flex h-screen overflow-hidden">
+    <div className="flex h-screen w-full overflow-hidden">
       <AnimatePresence>
         {sidebarOpen && (
           <motion.div
@@ -30,10 +61,10 @@ export default function Layout() {
             animate={{ width: "230px" }}
             exit={{ width: 0 }}
             transition={{ duration: 0.3 }}
-            className="bg-gray-100 overflow-y-auto flex flex-col"
+            className="bg-gray-50 overflow-y-auto flex flex-col shrink-0"
           >
             {/* Sidebar header */}
-            <div data-tauri-drag-region className="pl-20 py-2 border-b border-gray-200 flex items-center px-4">
+            <HeaderToolbar className="pl-20 border-r">
               <Button
                 onClick={toggleSidebar}
                 variant="outline"
@@ -42,9 +73,8 @@ export default function Layout() {
               >
                 <ChevronRight size={16} />
               </Button>
-            </div>
-            {/* Sidebar content */}
-            <div className="p-4 flex-grow">Sidebar Content</div>
+            </HeaderToolbar>
+            <Sidebar />
           </motion.div>
         )}
       </AnimatePresence>
@@ -56,8 +86,7 @@ export default function Layout() {
             className="w-[300px] bg-white overflow-y-auto flex flex-col"
             transition={{ duration: 0.3 }}
           >
-            {/* Second column header */}
-            <div data-tauri-drag-region className={`py-2 border-b border-gray-200 flex items-center justify-between px-4 ${sidebarOpen ? "" : "pl-20"}`}>
+            <HeaderToolbar className={sidebarOpen ? "" : "pl-20"}>
               <div className="flex space-x-2 items-center">
                 {!sidebarOpen && (
                   <Button
@@ -69,46 +98,11 @@ export default function Layout() {
                     <ChevronRight size={16} />
                   </Button>
                 )}
-                <Button
-                  variant="outline"
-                  size="icon"
-                  className="h-8 w-8"
-                >
-                  <Pencil size={16} className="text-gray-600 cursor-pointer" />
-                </Button>
-                <Button
-                  variant="outline"
-                  size="icon"
-                  className="h-8 w-8"
-                >
-                  <Trash2 size={16} className="text-gray-600 cursor-pointer" />
-                </Button>
+                <CreateNoteButton />
+                <TrashNoteButton />
               </div>
-            </div>
-            {/* Second column content */}
-            <div className="p-4">Second Column Content</div>
-            {items.map((item) => (
-              <div className="px-2">
-                <div
-                  key={item.id}
-                  className="relative p-4 cursor-pointer"
-                  onClick={() => setSelectedItem(item.id)}
-                >
-                  <AnimatePresence>
-                    {selectedItem === item.id && (
-                      <motion.div
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        exit={{ opacity: 0 }}
-                        transition={{ duration: 0.3, ease: "easeInOut" }}
-                        className="absolute inset-0 bg-pink-200 rounded-md"
-                      />
-                    )}
-                  </AnimatePresence>
-                  <p className="relative z-10">{item.content}</p>
-                </div>
-              </div>
-            ))}
+            </HeaderToolbar>
+            <NotesList />
           </motion.div>
 
           <motion.div
@@ -116,12 +110,10 @@ export default function Layout() {
             className="flex-1 bg-gray-50 overflow-y-auto flex flex-col"
             transition={{ duration: 0.3 }}
           >
-            {/* Third column header */}
-            <div className="pl-20 py-2 border-b border-gray-200 flex items-center px-4">
-              Third Column Header
-            </div>
-            {/* Third column content */}
-            <div className="p-4 flex-grow">Third Column Content</div>
+            <HeaderToolbar className={sidebarOpen ? "" : "pl-20"}>
+              Third column
+            </HeaderToolbar>
+            <Editor />
           </motion.div>
         </div>
       </div>
