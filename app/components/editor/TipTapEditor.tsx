@@ -116,10 +116,7 @@ const TipTapEditor: React.FC<TipTapEditorProps> = ({ onUpdate, initialContent })
 
     return <div>
         {editor &&
-            <>
-                <Toolbar />
-                <EditorContent editor={editor} />
-            </>
+            <EditorContent editor={editor} />
         }
     </div>;
 }

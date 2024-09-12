@@ -14,6 +14,7 @@ import Editor from '@/app/components/Editor';
 import HeaderToolbar from '@/app/components/toolbars/HeaderToolbar';
 import CreateNoteButton from '@/app/components/toolbars/CreateNoteButton';
 import TrashNoteButton from '@/app/components/toolbars/TrashNoteButton';
+import Toolbar from './components/editor/Toolbar';
 
 export default function Layout() {
   // TODO: if you use atom value, it doesn't re-render properly!! something with motion.div
@@ -115,8 +116,9 @@ export default function Layout() {
             transition={{ duration: 0.3 }}
           >
             <HeaderToolbar className={sidebarOpen ? "" : "pl-20"}>
-              Third column
+              <Toolbar />
             </HeaderToolbar>
+            <div className="mt-4"></div>
             <Editor />
           </motion.div>
         </div>

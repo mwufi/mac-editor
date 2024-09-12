@@ -1,6 +1,6 @@
 import { useAtomValue } from "jotai";
 import { editorAtom } from "@/app/atoms";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import { Toggle } from "@/components/ui/toggle";
@@ -14,18 +14,53 @@ function getSelectionChain(editor: Editor) {
     return editor.chain().focus();
 }
 
+const ButtonGroup = ({ children }: { children: React.ReactNode }) => (
+    <div className="flex shadow border border-input rounded-md h-8 items-center overflow-hidden">
+        {children}
+    </div>
+);
+
 export default function Toolbar() {
     const editor = useAtomValue(editorAtom);
+    const [fontSize, setFontSize] = useState('16');
+    const [fontFamily, setFontFamily] = useState('');
+    const [isBold, setIsBold] = useState(false);
+    const [isItalic, setIsItalic] = useState(false);
+    const [isUnderline, setIsUnderline] = useState(false);
+    const [isStrike, setIsStrike] = useState(false);
+    const [textAlign, setTextAlign] = useState('left');
 
-    const editorFontSize = editor?.getAttributes('textStyle').fontSize;
-    const [fontSize, setFontSize] = useState(editorFontSize);
+    useEffect(() => {
+        if (!editor) return;
+
+        const updateToolbar = () => {
+            const attrs = editor.getAttributes('textStyle');
+            setFontSize(attrs.fontSize ? attrs.fontSize.replace('pt', '') : '16');
+            setFontFamily(attrs.fontFamily || '');
+            setIsBold(editor.isActive('bold'));
+            setIsItalic(editor.isActive('italic'));
+            setIsUnderline(editor.isActive('underline'));
+            setIsStrike(editor.isActive('strike'));
+            setTextAlign(editor.isActive({ textAlign: 'center' }) ? 'center' :
+                editor.isActive({ textAlign: 'right' }) ? 'right' : 'left');
+        };
+
+        editor.on('selectionUpdate', updateToolbar);
+        editor.on('update', updateToolbar);
+
+        return () => {
+            editor.off('selectionUpdate', updateToolbar);
+            editor.off('update', updateToolbar);
+        };
+    }, [editor]);
 
     if (!editor) return null;
 
     return (
-        <div className="control-group py-2 flex flex-row gap-1 mb-4 text-pink-500">
-            <div className="button-group">
-                <Select onValueChange={(value) => {
+        <div className="w-full flex flex-row gap-2 h-12 items-center">
+            <ButtonGroup>
+                <Select value={fontFamily} onValueChange={(value) => {
+                    setFontFamily(value);
                     getSelectionChain(editor).setFontFamily(value).run();
                 }}>
                     <SelectTrigger className="w-[150px] h-8 text-xs">
@@ -41,12 +76,12 @@ export default function Toolbar() {
                         <SelectItem value='"Comic Sans MS", "Comic Sans"'>Comic Sans quoted</SelectItem>
                     </SelectContent>
                 </Select>
-            </div>
-            <div className="flex items-center gap-1 border rounded-md p-1">
+            </ButtonGroup>
+            <ButtonGroup>
                 <button
                     onClick={() => {
-                        const currentSize = parseInt(editorFontSize || '16');
-                        const newSize = Math.max(8, currentSize - 1);
+                        const newSize = Math.max(8, parseInt(fontSize) - 1);
+                        setFontSize(newSize.toString());
                         editor.chain().focus().setFontSize(`${newSize}pt`).run();
                     }}
                     className="h-4 w-6 text-xs font-medium flex items-center justify-center"
@@ -55,7 +90,7 @@ export default function Toolbar() {
                 </button>
                 <input
                     type="text"
-                    value={fontSize || '16pt'}
+                    value={fontSize}
                     onChange={(e) => {
                         const newSize = e.target.value.replace(/[^0-9]/g, '');
                         setFontSize(newSize);
@@ -67,129 +102,107 @@ export default function Toolbar() {
                 />
                 <button
                     onClick={() => {
-                        const currentSize = parseInt(editorFontSize || '16');
-                        const newSize = Math.min(72, currentSize + 1);
+                        const newSize = Math.min(72, parseInt(fontSize) + 1);
+                        setFontSize(newSize.toString());
                         getSelectionChain(editor).setFontSize(`${newSize}pt`).run();
                     }}
                     className="h-4 w-6 text-xs flex items-center justify-center"
                 >
                     +
                 </button>
-            </div>
-            <div className="flex items-center border p-0.5 rounded-md">
+            </ButtonGroup>
+            <ButtonGroup>
                 <Toggle
-                    pressed={editor.isActive('bold')}
-                    onPressedChange={() => {
-                        getSelectionChain(editor).toggleBold().run();
-                    }}
+                    value="bold"
                     aria-label="Toggle bold"
-                    className="h-6 w-6 text-pink-500 bg-blue-500"
+                    pressed={isBold}
+                    onPressedChange={() => getSelectionChain(editor).toggleBold().run()}
                 >
-                    <Bold className="h-3 w-3" />
+                    <Bold size={16} />
                 </Toggle>
                 <Toggle
-                    pressed={editor.isActive('italic')}
-                    onPressedChange={() => {
-                        getSelectionChain(editor).toggleItalic().run();
-                    }}
+                    value="italic"
                     aria-label="Toggle italic"
-                    className="h-6 w-6"
+                    pressed={isItalic}
+                    onPressedChange={() => getSelectionChain(editor).toggleItalic().run()}
                 >
-                    <Italic className="h-3 w-3" />
+                    <Italic size={16} />
                 </Toggle>
                 <Toggle
-                    pressed={editor.isActive('underline')}
-                    onPressedChange={() => {
-                        getSelectionChain(editor).toggleUnderline().run();
-                    }}
+                    value="underline"
                     aria-label="Toggle underline"
-                    className="h-6 w-6"
+                    pressed={isUnderline}
+                    onPressedChange={() => getSelectionChain(editor).toggleUnderline().run()}
                 >
-                    <Underline className="h-3 w-3" />
+                    <Underline size={16} />
                 </Toggle>
                 <Toggle
-                    pressed={editor.isActive('strike')}
-                    onPressedChange={() => {
-                        getSelectionChain(editor).toggleStrike().run();
-                    }}
+                    value="strike"
                     aria-label="Toggle strikethrough"
-                    className="h-6 w-6"
+                    pressed={isStrike}
+                    onPressedChange={() => getSelectionChain(editor).toggleStrike().run()}
                 >
-                    <Strikethrough className="h-3 w-3" />
+                    <Strikethrough size={16} />
                 </Toggle>
+            </ButtonGroup>
+            <ButtonGroup>
                 <Toggle
-                    pressed={editor.isActive('textStyle', { color: '#ff69b4' })}
-                    onPressedChange={() => {
-                        getSelectionChain(editor).setColor('#ff69b4').run();
-                    }}
-                    aria-label="Toggle pink text"
-                    className="h-6 w-6"
-                >
-                    <Type className="h-3 w-3 text-pink-400" />
-                </Toggle>
-            </div>
-            <div className="flex items-center border p-0.5 rounded-md">
-                <Toggle
-                    pressed={editor.isActive({ textAlign: 'left' })}
-                    onPressedChange={() => editor.chain().focus().setTextAlign('left').run()}
+                    value="alignLeft"
                     aria-label="Align left"
-                    className="h-6 w-6"
+                    pressed={textAlign === 'left'}
+                    onPressedChange={() => getSelectionChain(editor).setTextAlign('left').run()}
                 >
-                    <AlignLeft className="h-3 w-3" />
+                    <AlignLeft size={16} />
                 </Toggle>
                 <Toggle
-                    pressed={editor.isActive({ textAlign: 'center' })}
-                    onPressedChange={() => editor.chain().focus().setTextAlign('center').run()}
+                    value="alignCenter"
                     aria-label="Align center"
-                    className="h-6 w-6"
+                    pressed={textAlign === 'center'}
+                    onPressedChange={() => getSelectionChain(editor).setTextAlign('center').run()}
                 >
-                    <AlignCenter className="h-3 w-3" />
+                    <AlignCenter size={16} />
                 </Toggle>
                 <Toggle
-                    pressed={editor.isActive({ textAlign: 'right' })}
-                    onPressedChange={() => editor.chain().focus().setTextAlign('right').run()}
+                    value="alignRight"
                     aria-label="Align right"
-                    className="h-6 w-6"
+                    pressed={textAlign === 'right'}
+                    onPressedChange={() => getSelectionChain(editor).setTextAlign('right').run()}
                 >
-                    <AlignRight className="h-3 w-3" />
+                    <AlignRight size={16} />
                 </Toggle>
-            </div>
-            <div className="flex items-center gap-1 ml-auto">
-                <Button
-                    variant="outline"
-                    size="icon"
-                    onClick={() => {
-                        // Implement image upload logic here
-                    }}
-                    aria-label="Add image"
-                    className="h-6 w-6"
-                >
-                    <Image className="h-3 w-3" />
-                </Button>
-                <Button
-                    variant="outline"
-                    size="icon"
-                    onClick={() => {
-                        // Implement attachment logic here
-                    }}
-                    aria-label="Add attachment"
-                    className="h-6 w-6"
-                >
-                    <Paperclip className="h-3 w-3" />
-                </Button>
-                <Button
-                    variant="outline"
-                    size="sm"
-                    className="shrink-0 w-16 h-6 text-xs flex items-center justify-center gap-1"
-                    onClick={() => {
-                        // Implement share logic here
-                    }}
-                    aria-label="Share"
-                >
-                    <Share className="h-3 w-3" />
-                    Share
-                </Button>
-            </div>
+            </ButtonGroup>
+            <Button
+                variant="outline"
+                size="icon"
+                onClick={() => {
+                    // Implement image upload logic here
+                }}
+                aria-label="Add image"
+            >
+                <Image size={16} />
+            </Button>
+            <Button
+                variant="outline"
+                size="icon"
+                onClick={() => {
+                    // Implement attachment logic here
+                }}
+                aria-label="Add attachment"
+            >
+                <Paperclip size={16} />
+            </Button>
+            <Button
+                variant="outline"
+                size="sm"
+                className="shrink-0 w-16 text-xs flex items-center justify-center gap-1"
+                onClick={() => {
+                    // Implement share logic here
+                }}
+                aria-label="Share"
+            >
+                <Share size={16} />
+                Share
+            </Button>
         </div>
     )
 }

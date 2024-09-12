@@ -7,7 +7,6 @@ import "./headermenu.css";
 import { Inter } from 'next/font/google';
 import { Toaster } from "sonner";
 import TailwindSizeMarker from "./components/dev/TailwindSizeMarker";
-import ToggleSidebarIcon from "./ToggleSidebarIcon";
 
 const inter = Inter({ subsets: ['latin'] });
 
