@@ -104,7 +104,7 @@ export default function Layout() {
 
           <motion.div
             layout
-            className="flex-1 bg-gray-50 overflow-y-auto flex flex-col"
+            className="flex-1 overflow-y-auto flex flex-col"
             transition={{ duration: 0.3 }}
           >
             <HeaderToolbar className={sidebarOpen ? "" : "pl-20"}>

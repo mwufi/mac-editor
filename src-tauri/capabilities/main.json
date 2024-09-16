@@ -11,6 +11,8 @@
     "sql:allow-select",
     "sql:default",
     "fs:default",
-    "core:window:allow-start-dragging"
+    "core:window:allow-start-dragging",
+    "fs:allow-appdata-write-recursive",
+    "fs:allow-appdata-read-recursive"
   ]
 }

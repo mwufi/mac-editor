@@ -5,7 +5,7 @@ import { Editor } from "@tiptap/react";
 export async function uploadAndInsertImage(editor: Editor, file: File, pos = null) {
     toast.info("Uploading image to cloud....")
     try {
-        const supabasePath = await uploadImageToSupabase(file)
+        const supabasePath = await uploadImageToLocal(file)
         console.log("Supabase path", supabasePath)
 
         editor.chain().insertContent([

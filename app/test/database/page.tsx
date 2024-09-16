@@ -7,6 +7,8 @@ import { Button } from "@/components/ui/button"
 import { toast } from "sonner"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { addUser, createNote, createCollection, createNoteToCollection, deleteRecord, deleteNote, ensureTables } from '@/lib/orm'
+import { writeTextFile, BaseDirectory } from '@tauri-apps/plugin-fs';
+import { appDataDir } from '@tauri-apps/api/path';
 
 async function loadDatabase() {
   return await Database.load('sqlite:real.db')
@@ -125,6 +127,17 @@ export default function Page() {
         toast.success("Tables ensured successfully");
       }}>
         Ensure Tables
+      </Button>
+
+      <Button onClick={async () => {
+        async function write(message: string) {
+          await writeTextFile('test.txt', message, { baseDir: BaseDirectory.AppData });
+        }
+        const appDataDirPath = await appDataDir();
+        toast.info("App data directory path: " + appDataDirPath);
+        write("Hello, world!");
+      }}>
+        Create text file
       </Button>
 
       <div className="mb-4">

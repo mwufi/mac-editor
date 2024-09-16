@@ -2,7 +2,7 @@
 
 import { useEffect } from 'react';
 
-import { EditorContent, JSONContent, useEditor as useTiptapEditor } from '@tiptap/react';
+import { Editor, EditorContent, JSONContent, useEditor as useTiptapEditor } from '@tiptap/react';
 import CharacterCount from '@tiptap/extension-character-count';
 import StarterKit from '@tiptap/starter-kit'
 import Youtube from '@tiptap/extension-youtube'
@@ -11,29 +11,19 @@ import Placeholder from '@tiptap/extension-placeholder';
 import Focus from '@tiptap/extension-focus';
 import TaskItem from '@tiptap/extension-task-item'
 import TaskList from '@tiptap/extension-task-list'
-import Image from '@tiptap/extension-image'
+import NextImageNode from '@/components/editor/nodes/NextImageNode'
 import FontFamily from '@tiptap/extension-font-family';
 import TextStyle from '@tiptap/extension-text-style'
 import FontSize from 'tiptap-extension-font-size'
 import Underline from '@tiptap/extension-underline'
 import TextAlign from '@tiptap/extension-text-align'
 import Document from '@tiptap/extension-document'
-
-const CustomDocument = Document.extend({
-    content: 'heading block*',
-})
+import FileHandler from '@/components/editor/extensions/FileHandler';
 
 import { useAtom } from 'jotai';
 import { editorAtom } from '@/app/atoms';
-
-import { Libre_Baskerville, JetBrains_Mono } from 'next/font/google';
-import Toolbar from './Toolbar';
-
-const libreBaskerville = Libre_Baskerville({
-    weight: ['400', '700'],
-    subsets: ['latin'],
-    display: 'swap',
-});
+import { toast } from 'sonner';
+import { uploadImageToLocal, loader as localFileLoader } from '@/components/editor/LocalFileLoader';
 
 interface TipTapEditorProps {
     onUpdate: (contentAsJson: JSONContent, contentAsText: string) => void;
@@ -45,7 +35,9 @@ const TipTapEditor: React.FC<TipTapEditorProps> = ({ onUpdate, initialContent })
 
     const editor = useTiptapEditor({
         extensions: [
-            CustomDocument,
+            Document.extend({
+                content: 'heading block*',
+            }),
             StarterKit.configure({
                 document: false,
             }),
@@ -56,7 +48,9 @@ const TipTapEditor: React.FC<TipTapEditorProps> = ({ onUpdate, initialContent })
                 className: 'focus',
             }),
             CharacterCount,
-            Image,
+            NextImageNode.configure({
+                loader: localFileLoader,
+            }),
             Link,
             Underline,
             TextAlign.configure({
@@ -74,7 +68,36 @@ const TipTapEditor: React.FC<TipTapEditorProps> = ({ onUpdate, initialContent })
             Youtube.configure({
                 controls: false,
                 nocookie: true,
-            })
+            }),
+            FileHandler.configure({
+                allowedMimeTypes: ['image/png', 'image/jpeg', 'image/gif', 'image/webp'],
+                onDrop: (currentEditor, files, pos) => {
+                    files.forEach(async file => {
+                        uploadAndInsertImage(currentEditor, file)
+                    })
+                },
+                onPaste: (currentEditor, files, htmlContent) => {
+                    if (htmlContent) {
+                        // Handle pasted HTML content
+                        const parser = new DOMParser();
+                        const doc = parser.parseFromString(htmlContent, 'text/html');
+                        const imgElement = doc.querySelector('img');
+                        console.log("pasted html content", htmlContent, imgElement)
+
+                        if (imgElement && imgElement.src) {
+                            insertImageUrl(currentEditor, imgElement.src)
+                            return true;
+                        }
+
+                        // If no image in HTML content, allow default paste behavior
+                        return false;
+                    }
+
+                    files.forEach(async file => {
+                        uploadAndInsertImage(currentEditor, file)
+                    })
+                },
+            }),
         ],
         content: null,
         editorProps: {
@@ -119,6 +142,42 @@ const TipTapEditor: React.FC<TipTapEditorProps> = ({ onUpdate, initialContent })
             <EditorContent editor={editor} />
         }
     </div>;
+}
+
+async function uploadAndInsertImage(editor: Editor, file: File) {
+    toast.info("Uploading image to cloud....")
+    try {
+        const supabasePath = await uploadImageToLocal(file)
+        console.log("Supabase path", supabasePath)
+
+        editor.chain().insertContent([
+            {
+                type: 'nextImage',
+                attrs: {
+                    src: supabasePath,
+                },
+            },
+            {
+                type: 'paragraph'
+            },
+        ]).focus().run()
+    } catch (error) {
+        toast.error('Error uploading image:', error.message);
+    }
+}
+
+function insertImageUrl(editor: Editor, url: string) {
+    editor.chain().insertContent([
+        {
+            type: 'nextImage',
+            attrs: {
+                src: url,
+            },
+        },
+        {
+            type: 'paragraph'
+        }
+    ]).focus().run()
 }
 
 export default TipTapEditor
