@@ -121,6 +121,10 @@ export async function createCollection(name: string, description: string, userId
   });
 }
 
+export async function renameCollection(collectionId: string, newName: string) {
+  await db.update(Collections).set({ name: newName }).where(eq(Collections.id, parseInt(collectionId)));
+}
+
 export async function createNoteToCollection(noteId: string, collectionId: string, userId: string) {
   const now = new Date().toISOString();
   await db.insert(NotesCollections).values({
