@@ -99,7 +99,7 @@ export async function addUser(name: string, handle: string, email: string) {
   await db.insert(Users).values({ name, handle, email });
 }
 
-export async function addNote(title: string, content: string, userId: string) {
+export async function createNote(title: string, content: string, userId: string) {
   const now = new Date().toISOString();
   await db.insert(Notes).values({
     title,
@@ -110,7 +110,7 @@ export async function addNote(title: string, content: string, userId: string) {
   });
 }
 
-export async function addCollection(name: string, description: string, userId: string) {
+export async function createCollection(name: string, description: string, userId: string) {
   const now = new Date().toISOString();
   await db.insert(Collections).values({
     name,
@@ -121,7 +121,7 @@ export async function addCollection(name: string, description: string, userId: s
   });
 }
 
-export async function addNoteToCollection(noteId: string, collectionId: string, userId: string) {
+export async function createNoteToCollection(noteId: string, collectionId: string, userId: string) {
   const now = new Date().toISOString();
   await db.insert(NotesCollections).values({
     note_id: parseInt(noteId),
@@ -143,7 +143,7 @@ export async function deleteRecord(table: 'Users' | 'Notes' | 'Collections' | 'N
   await db.delete(tableMap[table]).where(eq(tableMap[table].id, parseInt(id)));
 }
 
-export async function createNote(collectionId: string): Promise<Note> {
+export async function createNoteInCollection(collectionId: string): Promise<Note> {
   const user = await getCurrentUser();
   if (!user) {
     throw new Error("No user found");
@@ -166,7 +166,7 @@ export async function createNote(collectionId: string): Promise<Note> {
     throw new Error("Failed to create new note");
   }
 
-  await addNoteToCollection(newNote.id.toString(), collectionId, user.id.toString());
+  await createNoteToCollection(newNote.id.toString(), collectionId, user.id.toString());
 
   return newNote as unknown as Note;
 }

@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { toast } from "sonner"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { addUser, addNote, addCollection, addNoteToCollection, deleteRecord, deleteNote, ensureTables } from '@/lib/orm'
+import { addUser, createNote, createCollection, createNoteToCollection, deleteRecord, deleteNote, ensureTables } from '@/lib/orm'
 
 async function loadDatabase() {
   return await Database.load('sqlite:real.db')
@@ -59,7 +59,7 @@ export default function Page() {
     toast.success("User added successfully");
   };
 
-  const handleAddNote = async () => {
+  const handlecreateNote = async () => {
     if (!db) {
       toast.message('Error', { description: 'Database not loaded' });
       return;
@@ -68,13 +68,13 @@ export default function Page() {
       toast.message('Error', { description: 'All fields are required' });
       return;
     }
-    await addNote(newNote.title, newNote.content, currentUser);
+    await createNote(newNote.title, newNote.content, currentUser);
     fetchAllData(db).then(setData);
     setNewNote({ title: '', content: '', userId: '' });
     toast.success("Note added successfully");
   };
 
-  const handleAddCollection = async () => {
+  const handlecreateCollection = async () => {
     if (!db) {
       toast.message('Error', { description: 'Database not loaded' });
       return;
@@ -83,13 +83,13 @@ export default function Page() {
       toast.message('Error', { description: 'All fields are required' });
       return;
     }
-    await addCollection(newCollection.name, newCollection.description, currentUser);
+    await createCollection(newCollection.name, newCollection.description, currentUser);
     fetchAllData(db).then(setData);
     setNewCollection({ name: '', description: '', userId: '' });
     toast.success("Collection added successfully");
   };
 
-  const handleAddNoteToCollection = async () => {
+  const handlecreateNoteToCollection = async () => {
     if (!db) {
       toast.message('Error', { description: 'Database not loaded' });
       return;
@@ -98,7 +98,7 @@ export default function Page() {
       toast.message('Error', { description: 'All fields are required' });
       return;
     }
-    await addNoteToCollection(newNoteCollection.noteId, newNoteCollection.collectionId, currentUser);
+    await createNoteToCollection(newNoteCollection.noteId, newNoteCollection.collectionId, currentUser);
     fetchAllData(db).then(setData);
     setNewNoteCollection({ noteId: '', collectionId: '', userId: '' });
     toast.success("Note added to collection successfully");
@@ -178,7 +178,7 @@ export default function Page() {
         <div className="flex gap-2 mb-2">
           <Input placeholder="Title" value={newNote.title} onChange={(e) => setNewNote({ ...newNote, title: e.target.value })} />
           <Input placeholder="Content" value={newNote.content} onChange={(e) => setNewNote({ ...newNote, content: e.target.value })} />
-          <Button onClick={handleAddNote}>Add Note</Button>
+          <Button onClick={handlecreateNote}>Add Note</Button>
         </div>
         <table className="w-full">
           <thead>
@@ -216,7 +216,7 @@ export default function Page() {
         <div className="flex gap-2 mb-2">
           <Input placeholder="Name" value={newCollection.name} onChange={(e) => setNewCollection({ ...newCollection, name: e.target.value })} />
           <Input placeholder="Description" value={newCollection.description} onChange={(e) => setNewCollection({ ...newCollection, description: e.target.value })} />
-          <Button onClick={handleAddCollection}>Add Collection</Button>
+          <Button onClick={handlecreateCollection}>Add Collection</Button>
         </div>
         <table className="w-full">
           <thead>
@@ -251,7 +251,7 @@ export default function Page() {
         <div className="flex gap-2 mb-2">
           <Input placeholder="Note ID" value={newNoteCollection.noteId} onChange={(e) => setNewNoteCollection({ ...newNoteCollection, noteId: e.target.value })} />
           <Input placeholder="Collection ID" value={newNoteCollection.collectionId} onChange={(e) => setNewNoteCollection({ ...newNoteCollection, collectionId: e.target.value })} />
-          <Button onClick={handleAddNoteToCollection}>Add Note to Collection</Button>
+          <Button onClick={handlecreateNoteToCollection}>Add Note to Collection</Button>
         </div>
         <table className="w-full">
           <thead>

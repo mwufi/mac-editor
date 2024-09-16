@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { createNote } from "@/lib/orm";
+import { createNoteInCollection } from "@/lib/orm";
 import { useAtom, useAtomValue, useSetAtom } from "jotai";
 import { selectedNoteIdAtom, initialContentAtom, selectedCollectionIdAtom, collectionNotesAtom } from "@/app/atoms";
 import { Pencil } from "lucide-react";
@@ -13,7 +13,7 @@ function CreateNoteButton() {
   const handleCreateNote = async () => {
     if (selectedCollectionId) {
       try {
-        const newNote = await createNote(selectedCollectionId);
+        const newNote = await createNoteInCollection(selectedCollectionId);
         setNotes([newNote, ...notes]);
         setSelectedNoteId(newNote.id);
         setInitialContent('');
