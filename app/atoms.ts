@@ -4,6 +4,11 @@ import { Editor } from "@tiptap/react";
 
 export const collectionsAtom = atom<Collection[]>([]);
 export const selectedCollectionIdAtom = atom<string | null>(null);
+export const selectedCollectionAtom = atom((get) => {
+  const id = get(selectedCollectionIdAtom);
+  const collections = get(collectionsAtom);
+  return collections.find((collection) => collection.id === id) || null;
+});
 
 export const collectionNotesAtom = atom<Note[]>([]);
 export const selectedNoteIdAtom = atom<string | null>(null);

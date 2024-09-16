@@ -3,8 +3,8 @@
 import { useEffect, useState } from "react";
 import { Search } from "lucide-react";
 import { Note } from "../types";
-import { useAtom, useSetAtom } from "jotai";
-import { selectedCollectionIdAtom, collectionNotesAtom, selectedNoteIdAtom, initialContentAtom } from "@/app/atoms";
+import { useAtom, useAtomValue, useSetAtom } from "jotai";
+import { selectedCollectionIdAtom, collectionNotesAtom, selectedNoteIdAtom, initialContentAtom, selectedCollectionAtom } from "@/app/atoms";
 import { getNotesInCollection, deleteNote } from "@/lib/orm";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -46,6 +46,7 @@ const NotesList = () => {
     const [selectedNoteId, setSelectedNoteId] = useAtom(selectedNoteIdAtom);
     const setInitialContent = useSetAtom(initialContentAtom);
     const [selectedCollectionId] = useAtom(selectedCollectionIdAtom);
+    const selectedCollection = useAtomValue(selectedCollectionAtom);
     const [notes, setNotes] = useAtom(collectionNotesAtom);
     const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
 
@@ -94,7 +95,7 @@ const NotesList = () => {
             </div>
             <motion.div className="overflow-y-auto h-[calc(100%-6rem)]" layout>
                 <div className="py-2 px-4 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase">
-                    {selectedCollectionId ? `Notes in ${selectedCollectionId}` : 'Notes'}
+                    {selectedCollectionId ? `${selectedCollection?.name} Notes` : 'Notes'}
                 </div>
                 <AnimatePresence>
                     {notes.map((note) => (

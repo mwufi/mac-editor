@@ -32,10 +32,7 @@ const Sidebar = () => {
     return (
         <div className={`shrink-0 ${!sidebarOpen && "fixed"} h-full overflow-y-auto bg-gray-50 dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 p-2`}>
             <div className="">
-                <SidebarItem icon={LayoutDashboard} label="Dashboard" href="/test/layout" />
-                <SidebarItem icon={Star} label="Starred" count={31} />
-                <SidebarItem icon={Archive} label="Archive" count={216} />
-                <SidebarItem icon={Trash2} label="Deleted" count={12} />
+                <SidebarItem icon={LayoutDashboard} label="Dashboard" href="/dashboard" />
             </div>
             <div className="mt-8">
                 <h3 className="px-4 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Tests</h3>
