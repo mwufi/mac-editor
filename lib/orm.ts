@@ -5,6 +5,48 @@ import { db } from './db';
 import { Users, Notes, Collections, NotesCollections, ShareLinks } from './schema';
 import { eq, desc, sql } from 'drizzle-orm';
 
+export async function ensureTables() {
+  // Check if a default user exists
+  const userCount = await db.select({ count: sql<number>`count(*)` })
+    .from(Users)
+    .then(result => result[0].count);
+
+  if (userCount === 0) {
+    // Create a default user if none exists
+    await db.insert(Users).values({
+      name: 'Default User',
+      handle: 'default',
+      email: 'default@example.com'
+    });
+  }
+
+  // Default collections to ensure
+  const defaultCollections = ['Deleted', 'Archived', 'Starred'];
+
+  for (const collectionName of defaultCollections) {
+    // Check if the collection exists
+    const collectionCount = await db.select({ count: sql<number>`count(*)` })
+      .from(Collections)
+      .where(eq(Collections.name, collectionName))
+      .then(result => result[0].count);
+
+    if (collectionCount === 0) {
+      // Get the first user's ID (which should be our default user)
+      const user = await db.select().from(Users).limit(1).then(users => users[0]);
+
+      // Create the collection if it doesn't exist
+      await db.insert(Collections).values({
+        name: collectionName,
+        description: `Default ${collectionName} collection`,
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
+        user_id: user.id
+      });
+    }
+  }
+
+}
+
 export async function getCurrentUser(): Promise<User | null> {
   try {
     const users = await db.select().from(Users).limit(1);

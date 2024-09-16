@@ -71,6 +71,12 @@ fn main() {
             sql: "CREATE UNIQUE INDEX idx_unique_user_handle ON users(handle); CREATE UNIQUE INDEX idx_unique_user_email ON users(email);",
             kind: MigrationKind::Up,
         },
+        Migration {
+            version: 9,
+            description: "add_unique_constraint_to_collections_name",
+            sql: "CREATE UNIQUE INDEX idx_unique_collection_name ON collections(name, user_id);",
+            kind: MigrationKind::Up,
+        },
     ];
 
     // This is where you pass in your commands

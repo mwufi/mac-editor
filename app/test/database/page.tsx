@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { toast } from "sonner"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { addUser, addNote, addCollection, addNoteToCollection, deleteRecord, deleteNote } from '@/lib/orm'
+import { addUser, addNote, addCollection, addNoteToCollection, deleteRecord, deleteNote, ensureTables } from '@/lib/orm'
 
 async function loadDatabase() {
   return await Database.load('sqlite:real.db')
@@ -83,7 +83,7 @@ export default function Page() {
       toast.message('Error', { description: 'All fields are required' });
       return;
     }
-    await addCollection(db, newCollection.name, newCollection.description, currentUser);
+    await addCollection(newCollection.name, newCollection.description, currentUser);
     fetchAllData(db).then(setData);
     setNewCollection({ name: '', description: '', userId: '' });
     toast.success("Collection added successfully");
@@ -98,18 +98,18 @@ export default function Page() {
       toast.message('Error', { description: 'All fields are required' });
       return;
     }
-    await addNoteToCollection(db, newNoteCollection.noteId, newNoteCollection.collectionId, currentUser);
+    await addNoteToCollection(newNoteCollection.noteId, newNoteCollection.collectionId, currentUser);
     fetchAllData(db).then(setData);
     setNewNoteCollection({ noteId: '', collectionId: '', userId: '' });
     toast.success("Note added to collection successfully");
   };
 
-  const handleDelete = async (table: string, id: string) => {
+  const handleDelete = async (table: "Users" | "Notes" | "Collections" | "NotesCollections" | "ShareLinks", id: string) => {
     if (!db) {
       toast.message('Error', { description: 'Database not loaded' });
       return;
     }
-    await deleteRecord(db, table, id);
+    await deleteRecord(table, id);
     fetchAllData(db).then(setData);
     toast.success("Record deleted successfully");
   };
@@ -117,8 +117,15 @@ export default function Page() {
   if (!data) return <div>Loading... <Button onClick={() => loadDatabase().then(setDb)}>Reload</Button></div>;
 
   return (
-    <div className="p-4">
+    <div className="p-4 h-full overflow-y-auto">
       <h1 className="text-2xl font-bold mb-4">Database Overview</h1>
+      <Button onClick={async () => {
+        await ensureTables();
+        fetchAllData(db!).then(setData);
+        toast.success("Tables ensured successfully");
+      }}>
+        Ensure Tables
+      </Button>
 
       <div className="mb-4">
         <h2 className="text-xl font-semibold mb-2">Current User</h2>
