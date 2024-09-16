@@ -47,6 +47,38 @@ export async function ensureTables() {
 
 }
 
+// utils
+export function getNoteSummary(note: Note, n: number = 40) {
+  let content;
+
+  try {
+    content = JSON.parse(note.content);
+  } catch (error) {
+    content = note.content;
+  }
+
+  try {
+    let summary = '';
+    const extractText = (node: any) => {
+      if (node.type === 'text' && node.text) {
+        summary += " " + node.text;
+      } else if (node.content) {
+        node.content.forEach(extractText);
+      }
+    };
+    content.content.forEach((node: any) => {
+      if (node.type !== 'heading') {
+        extractText(node);
+      }
+    });
+    return summary.slice(0, n);
+  } catch (error) {
+    console.error('Error parsing note content:', error);
+    console.log("content", content);
+    return ""
+  }
+}
+
 export async function getCurrentUser(): Promise<User | null> {
   try {
     const users = await db.select().from(Users).limit(1);

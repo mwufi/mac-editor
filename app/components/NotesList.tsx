@@ -5,18 +5,19 @@ import { Search } from "lucide-react";
 import { Note } from "../types";
 import { useAtom, useAtomValue, useSetAtom } from "jotai";
 import { selectedCollectionIdAtom, collectionNotesAtom, selectedNoteIdAtom, initialContentAtom, selectedCollectionAtom } from "@/app/atoms";
-import { getNotesInCollection, deleteNote } from "@/lib/orm";
+import { getNotesInCollection, deleteNote, getNoteSummary } from "@/lib/orm";
 import { motion, AnimatePresence } from "framer-motion";
 
 interface NoteItemProps {
     title: string;
     date: string;
+    summary?: string;
     image?: string;
     onClick?: () => void;
     isSelected: boolean;
 }
 
-const NoteItem = ({ title, date, image, onClick, isSelected }: NoteItemProps) => (
+const NoteItem = ({ title, date, summary, image, onClick, isSelected }: NoteItemProps) => (
     <motion.div
         layout
         className={`flex relative items-center justify-between py-3 px-4 mx-3 group rounded-lg cursor-pointer transition-colors duration-200`}
@@ -37,6 +38,7 @@ const NoteItem = ({ title, date, image, onClick, isSelected }: NoteItemProps) =>
         <div className="z-10">
             <h3 className="text-sm text-gray-800 dark:text-gray-200 group-hover:text-gray-900 dark:group-hover:text-gray-100 font-medium">{title}</h3>
             <p className="text-xs text-gray-600 dark:text-gray-400 group-hover:text-gray-700 dark:group-hover:text-gray-300">{date}</p>
+            <p className="text-xs text-gray-600 dark:text-gray-400 group-hover:text-gray-700 dark:group-hover:text-gray-300">{summary}</p>
         </div>
         {image && <img src={image} alt={title} className="w-10 h-10 object-cover rounded z-10" />}
     </motion.div>
@@ -103,6 +105,7 @@ const NotesList = () => {
                             key={note.id}
                             title={note.title || ''}
                             date={new Date(note.updated_at || '').toLocaleDateString()}
+                            summary={getNoteSummary(note)}
                             onClick={() => {
                                 setSelectedNoteId(note.id);
                                 setInitialContent(note.content || '');
