@@ -4,6 +4,7 @@ import ImageFromNext from 'next/image'
 import { NodeViewWrapper } from '@tiptap/react'
 import ResizableContainer from './ResizableContainer'
 import React from 'react';
+import { loader } from './LocalFileLoader';
 
 interface FullWidthImageProps {
   src: string;
@@ -95,7 +96,6 @@ interface NextImageViewProps {
 const NextImageView = ({ node, updateAttributes, editor }: NextImageViewProps) => {
   const { src, alt, title, width, height } = node.attrs
   const isEditing = editor.isEditable
-  const loader = editor.extensionStorage?.nextImage?.options?.loader
 
   const handleResize = (newWidth: number, newHeight: number) => {
     updateAttributes({ width: newWidth, height: newHeight })

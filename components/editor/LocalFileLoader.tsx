@@ -2,6 +2,8 @@
 
 import { v4 as uuidv4 } from 'uuid';
 import { writeFile, BaseDirectory, readFile, exists, mkdir } from '@tauri-apps/plugin-fs';
+import { join, homeDir } from '@tauri-apps/api/path';
+import { convertFileSrc } from '@tauri-apps/api/core';
 
 async function ensureDir(dirName: string) {
   const testDirExists = await exists(dirName, { baseDir: BaseDirectory.Home });
@@ -13,8 +15,8 @@ async function ensureDir(dirName: string) {
 export async function uploadImageToLocal(file: File) {
   const uuid = uuidv4();
   const fileName = `${uuid}.${file.name.split('.').pop()}`;
-  const fullPath = `images/${fileName}`
-  console.log("Attempting to save to", fullPath)
+  const filepath = `images/${fileName}`
+  console.log("Attempting to save to", filepath)
   await ensureDir("images")
 
   const fileReader = new FileReader();
@@ -25,13 +27,15 @@ export async function uploadImageToLocal(file: File) {
       const uint8Array = new Uint8Array(arrayBuffer);
 
       try {
-        await writeFile(fullPath, uint8Array, {
+        await writeFile(filepath, uint8Array, {
           baseDir: BaseDirectory.Home,
         });
         console.log("Uploaded image to local storage", fileName);
-        resolve(`images/${fileName}`);
+
+        const assetUrl = convertFileSrc(await join(await homeDir(), filepath))
+        resolve(assetUrl)
       } catch (error) {
-        console.error('Error uploading image:', error);
+        console.error('Error uploading image:', error.message);
         resolve(null);
       }
     };
@@ -40,15 +44,15 @@ export async function uploadImageToLocal(file: File) {
   });
 }
 
-export const loader = async ({ src, width }: { src: string; width: number }) => {
+export const loader = async ({ src, width, quality }: { src: string; width: number, quality?: number }) => {
+  console.log("[loader] loading from local storage", src)
   if (src.startsWith('images/')) {
     // Load from local storage
     try {
-      const imageData = await readFile(src, {
-        baseDir: BaseDirectory.AppData,
-      });
-      const blob = new Blob([imageData], { type: 'image/png' });
-      return URL.createObjectURL(blob);
+      const homedirectory = await homeDir()
+      const filePath = await join(homedirectory, src);
+      const assetUrl = convertFileSrc(filePath);
+      return assetUrl;
     } catch (error) {
       console.error('Error reading image:', error);
       return src;

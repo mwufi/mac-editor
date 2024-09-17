@@ -23,7 +23,7 @@ import FileHandler from '@/components/editor/extensions/FileHandler';
 import { useAtom } from 'jotai';
 import { editorAtom } from '@/app/atoms';
 import { toast } from 'sonner';
-import { uploadImageToLocal, loader as localFileLoader } from '@/components/editor/LocalFileLoader';
+import { uploadImageToLocal } from '@/components/editor/LocalFileLoader';
 
 interface TipTapEditorProps {
     onUpdate: (contentAsJson: JSONContent, contentAsText: string) => void;
@@ -48,9 +48,7 @@ const TipTapEditor: React.FC<TipTapEditorProps> = ({ onUpdate, initialContent })
                 className: 'focus',
             }),
             CharacterCount,
-            NextImageNode.configure({
-                loader: localFileLoader,
-            }),
+            NextImageNode,
             Link,
             Underline,
             TextAlign.configure({
