@@ -14,6 +14,38 @@ async function loadDatabase() {
   return await Database.load('sqlite:real.db')
 }
 
+
+import { writeTextFile, readTextFile, exists, BaseDirectory } from '@tauri-apps/plugin-fs';
+
+async function checkFile() {
+  const result = await exists('avatar.png', { baseDir: BaseDirectory.Home });
+  console.log("result: " + result);
+  return result;
+}
+async function readFile() {
+  const result = await readTextFile('config.json', { baseDir: BaseDirectory.Home });
+  console.log("readFile: " + result);
+  return result;
+}
+
+async function writeFile() {
+  const contents = JSON.stringify({ notifications: true });
+  await writeTextFile('config.json', contents, {
+    baseDir: BaseDirectory.Home,
+  });
+  toast.success("File written successfully");
+}
+
+function FileTest() {
+  return (
+    <div className="flex p-4 gap-3">
+      <Button variant="outline" onClick={checkFile}>Check File</Button>
+      <Button variant="outline" onClick={readFile}>Read File</Button>
+      <Button variant="outline" onClick={writeFile}>Write File</Button>
+    </div>
+  )
+}
+
 async function fetchAllData(db: Database) {
   const tables = await db.select("SELECT name FROM sqlite_master WHERE type='table'");
   console.log("All tables in the database:", tables.map((table: any) => table.name));
@@ -128,6 +160,7 @@ export default function Page() {
       }}>
         Ensure Tables
       </Button>
+      <FileTest />
 
       <Button onClick={async () => {
         async function write(message: string) {
