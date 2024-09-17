@@ -7,30 +7,32 @@ import { Button } from "@/components/ui/button"
 import { toast } from "sonner"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { addUser, createNote, createCollection, createNoteToCollection, deleteRecord, deleteNote, ensureTables } from '@/lib/orm'
-import { writeTextFile, BaseDirectory } from '@tauri-apps/plugin-fs';
-import { appDataDir } from '@tauri-apps/api/path';
 
 async function loadDatabase() {
   return await Database.load('sqlite:real.db')
 }
 
-
-import { writeTextFile, readTextFile, exists, BaseDirectory } from '@tauri-apps/plugin-fs';
+import { writeTextFile, mkdir, readTextFile, exists, BaseDirectory } from '@tauri-apps/plugin-fs';
 
 async function checkFile() {
-  const result = await exists('avatar.png', { baseDir: BaseDirectory.Home });
+  const testDirExists = await exists('test', { baseDir: BaseDirectory.Home });
+  if (!testDirExists) {
+    await mkdir('test', { baseDir: BaseDirectory.Home });
+  }
+  const result = await exists('test/avatar.png', { baseDir: BaseDirectory.Home });
   console.log("result: " + result);
   return result;
 }
+
 async function readFile() {
-  const result = await readTextFile('config.json', { baseDir: BaseDirectory.Home });
+  const result = await readTextFile('test/config.json', { baseDir: BaseDirectory.Home });
   console.log("readFile: " + result);
   return result;
 }
 
 async function writeFile() {
   const contents = JSON.stringify({ notifications: true });
-  await writeTextFile('config.json', contents, {
+  await writeTextFile('test/config.json', contents, {
     baseDir: BaseDirectory.Home,
   });
   toast.success("File written successfully");
@@ -161,17 +163,6 @@ export default function Page() {
         Ensure Tables
       </Button>
       <FileTest />
-
-      <Button onClick={async () => {
-        async function write(message: string) {
-          await writeTextFile('test.txt', message, { baseDir: BaseDirectory.AppData });
-        }
-        const appDataDirPath = await appDataDir();
-        toast.info("App data directory path: " + appDataDirPath);
-        write("Hello, world!");
-      }}>
-        Create text file
-      </Button>
 
       <div className="mb-4">
         <h2 className="text-xl font-semibold mb-2">Current User</h2>

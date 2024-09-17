@@ -1,28 +1,4 @@
-import { toast } from "sonner";
-import { uploadImageToSupabase } from "@/lib/supabase";
 import { Editor } from "@tiptap/react";
-
-export async function uploadAndInsertImage(editor: Editor, file: File, pos = null) {
-    toast.info("Uploading image to cloud....")
-    try {
-        const supabasePath = await uploadImageToLocal(file)
-        console.log("Supabase path", supabasePath)
-
-        editor.chain().insertContent([
-            {
-                type: 'nextImage',
-                attrs: {
-                    src: supabasePath,
-                },
-            },
-            {
-                type: 'paragraph'
-            },
-        ]).focus().run()
-    } catch (error) {
-        toast.error('Error uploading image:', error.message);
-    }
-}
 
 export function insertImageUrl(editor: Editor, url: string) {
     editor.chain().insertContent([

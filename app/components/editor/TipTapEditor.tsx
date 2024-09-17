@@ -148,7 +148,6 @@ async function uploadAndInsertImage(editor: Editor, file: File) {
     toast.info("Uploading image to cloud....")
     try {
         const supabasePath = await uploadImageToLocal(file)
-        console.log("Supabase path", supabasePath)
 
         editor.chain().insertContent([
             {

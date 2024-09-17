@@ -1,14 +1,21 @@
 'use client'
 
 import { v4 as uuidv4 } from 'uuid';
-import { writeFile, BaseDirectory, readFile } from '@tauri-apps/plugin-fs';
-import { appDataDir } from '@tauri-apps/api/path';
+import { writeFile, BaseDirectory, readFile, exists, mkdir } from '@tauri-apps/plugin-fs';
+
+async function ensureDir(dirName: string) {
+  const testDirExists = await exists(dirName, { baseDir: BaseDirectory.Home });
+  if (!testDirExists) {
+    await mkdir(dirName, { baseDir: BaseDirectory.Home });
+  }
+}
 
 export async function uploadImageToLocal(file: File) {
-  console.log("Uploading image to local storage")
   const uuid = uuidv4();
   const fileName = `${uuid}.${file.name.split('.').pop()}`;
-  console.log("File name", file)
+  const fullPath = `images/${fileName}`
+  console.log("Attempting to save to", fullPath)
+  await ensureDir("images")
 
   const fileReader = new FileReader();
 
@@ -18,10 +25,8 @@ export async function uploadImageToLocal(file: File) {
       const uint8Array = new Uint8Array(arrayBuffer);
 
       try {
-        const appDataDirPath = await appDataDir();
-        console.log("Writing file to", appDataDirPath)
-        await writeFile(`images/${fileName}`, uint8Array, {
-          baseDir: BaseDirectory.AppData,
+        await writeFile(fullPath, uint8Array, {
+          baseDir: BaseDirectory.Home,
         });
         console.log("Uploaded image to local storage", fileName);
         resolve(`images/${fileName}`);

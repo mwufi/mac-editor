@@ -24,10 +24,10 @@ export default function RootLayout({
   return (
     <html lang="en" className="bg-black">
       <JotaiProvider>
-        <Toaster richColors position="top-right" />
         <body
           className={`${inter.className} antialiased h-screen flex flex-col overflow-hidden rounded-lg bg-white`}
         >
+          <Toaster richColors position="top-right" />
           <div className="flex-1 flex overflow-hidden">
             {children}
           </div>
