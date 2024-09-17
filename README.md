@@ -1,5 +1,5 @@
 
-![Screenshot of the App](./docs/screenshot.png)
+![Screenshot of the App](./docs/screenshot2.png)
 
 # Wordy - A Simple Text Editor
 
