@@ -2,10 +2,9 @@
 
 /* spacing */
 :root {
-    --paragraph-spacing: 0.8rem;
+    --paragraph-spacing: 0.4rem;
     --heading-spacing: 1.2em;
-    --list-spacing: 1em;
-    --item-spacing: 0.1em;
+    --item-spacing: 0.4em;
 }
 
 .tiptap {
@@ -27,21 +26,25 @@
     margin-block-start: 1em;
 }
 
-.tiptap p {
-    @apply leading-relaxed mb-[var(--paragraph-spacing)];
-    margin-block-start: 1em;
+.tiptap > p {
+    @apply leading-relaxed;
+    margin-block-start: var(--paragraph-spacing);
+    margin-block-end: var(--paragraph-spacing);
 }
 
 .tiptap ul {
-    @apply list-disc pl-4 mb-[var(--list-spacing)];
+    @apply list-disc pl-4 ml-4 marker:text-accent-darker;
 }
 
 .tiptap ol {
-    @apply list-decimal pl-4 mb-[var(--list-spacing)];
+    @apply list-decimal pl-4 ml-4;
 }
 
 .tiptap li {
-    @apply mb-[var(--item-spacing)];
+    @apply my-[var(--item-spacing)];
+}
+.tiptap li::marker{
+    @apply text-lg;
 }
 
 .tiptap a {

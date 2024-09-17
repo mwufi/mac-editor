@@ -37,7 +37,9 @@ export default function Toolbar() {
             const attrs = editor.getAttributes('textStyle');
             setFontSize(attrs.fontSize ? attrs.fontSize.replace('pt', '') : '16');
             setFontFamily(attrs.fontFamily || 'Inter');
-            console.log("font family", attrs.fontFamily);
+            if (attrs.fontFamily) {
+                console.log("font family", attrs.fontFamily);
+            }
             setIsBold(editor.isActive('bold'));
             setIsItalic(editor.isActive('italic'));
             setIsUnderline(editor.isActive('underline'));
