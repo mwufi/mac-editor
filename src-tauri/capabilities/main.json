@@ -10,7 +10,8 @@
     "sql:allow-execute",
     "sql:allow-select",
     "sql:default",
-    "fs:default",
+    "fs:allow-home-write-recursive",
+    "fs:allow-home-read-recursive",
     "core:window:allow-start-dragging"
   ]
 }
