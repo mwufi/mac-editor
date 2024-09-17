@@ -6,7 +6,6 @@ import TipTapEditor from "./editor/TipTapEditor";
 import { useEffect, useCallback, useMemo, useState } from "react";
 import { saveNoteContent } from "@/lib/orm";
 import { useDebounce } from "@/app/hooks/useDebounce";
-import { convertFileSrc } from "@tauri-apps/api/core";
 
 const Editor = () => {
     const selectedNote = useAtomValue(selectedNoteAtom);
@@ -62,7 +61,6 @@ const Editor = () => {
     const editorContent = useMemo(() => {
         if (!selectedNote) {
             return <div className="flex-1 h-full w-full grid place-items-center dark:bg-gray-900 px-8 overflow-y-auto">No note selected
-                <img src={convertFileSrc("/Users/zenzen/images/1312df5f-fc7e-49a5-a368-3e08306fb30f.png")} />
             </div>;
         }
 
