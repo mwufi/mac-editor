@@ -36,9 +36,9 @@ const NoteItem = ({ title, date, summary, image, onClick, isSelected }: NoteItem
             )}
         </AnimatePresence>
         <div className="z-10">
-            <h3 className="text-sm text-gray-800 dark:text-gray-200 group-hover:text-gray-900 dark:group-hover:text-gray-100 font-medium">{title}</h3>
-            <p className="text-xs text-gray-600 dark:text-gray-400 group-hover:text-gray-700 dark:group-hover:text-gray-300">{date}</p>
-            <p className="text-xs text-gray-600 dark:text-gray-400 group-hover:text-gray-700 dark:group-hover:text-gray-300">{summary}</p>
+            <h3 className={`text-sm font-medium ${isSelected ? 'text-accent-foreground' : 'text-gray-800 dark:text-gray-200 group-hover:text-gray-900 dark:group-hover:text-gray-100'}`}>{title}</h3>
+            <p className={`text-xs ${isSelected ? 'text-accent-foreground' : 'text-gray-600 dark:text-gray-400 group-hover:text-gray-700 dark:group-hover:text-gray-300'}`}>{date}</p>
+            <p className={`text-xs ${isSelected ? 'text-accent-foreground' : 'text-gray-600 dark:text-gray-400 group-hover:text-gray-700 dark:group-hover:text-gray-300'}`}>{summary}</p>
         </div>
         {image && <img src={image} alt={title} className="w-10 h-10 object-cover rounded z-10" />}
     </motion.div>
@@ -84,14 +84,14 @@ const NotesList = () => {
     const selectedNote = notes.find(note => note.id === selectedNoteId);
 
     return (
-        <div className="shrink-0 h-full bg-white">
+        <div className="shrink-0 h-full bg-white select-none">
             <div className="p-4">
                 <div className="relative">
                     <Search size={20} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
                     <input
                         type="text"
                         placeholder="Search notes"
-                        className="w-full pl-10 pr-4 py-2 bg-gray-100 dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        className="w-full pl-10 pr-4 py-2 bg-gray-100 dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 select-text"
                     />
                 </div>
             </div>

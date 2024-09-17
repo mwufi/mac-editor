@@ -37,7 +37,7 @@ const SidebarItem = ({ icon: Icon, label, count, href = "#", onClick, selected, 
         <div className="relative group">
             {isEditing ? (
                 <form onSubmit={handleRename} className="max-w-full flex w-full items-center gap-2 px-4 py-2">
-                    <Icon size={18} className="text-accent shrink-0" fill="currentColor" />
+                    <Icon size={18} className="text-accent-darker shrink-0" fill="currentColor" />
                     <input
                         type="text"
                         value={newLabel}
@@ -54,7 +54,7 @@ const SidebarItem = ({ icon: Icon, label, count, href = "#", onClick, selected, 
                     onClick={onClick}
                     onDoubleClick={handleDoubleClick}
                 >
-                    <Icon size={18} className="text-accent" fill="currentColor" />
+                    <Icon size={18} className="text-accent-darker shrink-0" fill="currentColor" />
                     <span className="flex-grow">{label}</span>
                     {count !== undefined && <span className="bg-gray-200 dark:bg-gray-700 text-xs font-medium px-2 py-0.5 rounded-full">{count}</span>}
                 </Link>
