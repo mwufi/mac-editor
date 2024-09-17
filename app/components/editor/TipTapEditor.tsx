@@ -19,6 +19,7 @@ import Underline from '@tiptap/extension-underline'
 import TextAlign from '@tiptap/extension-text-align'
 import Document from '@tiptap/extension-document'
 import FileHandler from '@/components/editor/extensions/FileHandler';
+import CalculatorExtension from '@/components/editor/extensions/CalculatorExtension';
 
 import { useAtom } from 'jotai';
 import { editorAtom } from '@/app/atoms';
@@ -49,6 +50,7 @@ const TipTapEditor: React.FC<TipTapEditorProps> = ({ onUpdate, initialContent })
             }),
             CharacterCount,
             NextImageNode,
+            CalculatorExtension,
             Link,
             Underline,
             TextAlign.configure({
