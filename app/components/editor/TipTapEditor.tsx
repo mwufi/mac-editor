@@ -36,9 +36,7 @@ const TipTapEditor: React.FC<TipTapEditorProps> = ({ onUpdate, initialContent })
 
     const editor = useTiptapEditor({
         extensions: [
-            Document.extend({
-                content: 'heading block*',
-            }),
+            Document,
             StarterKit.configure({
                 document: false,
             }),
