@@ -65,8 +65,8 @@ const Editor = () => {
         }
 
         return (
-            <div className="flex-1 h-full bg-white dark:bg-gray-900 px-8 overflow-y-auto shadow-lg rounded-lg w-[760px] mx-auto">
-                <div className="mt-8">
+            <div className="flex-1 h-full bg-background dark:bg-gray-900 px-8 overflow-y-auto shadow-lg rounded-lg w-[820px] mx-auto">
+                <div className="p-8">
                     <TipTapEditor onUpdate={handleUpdate} initialContent={initialContent} />
                 </div>
                 <div className="fixed bottom-4 right-4 flex items-center space-x-2">
