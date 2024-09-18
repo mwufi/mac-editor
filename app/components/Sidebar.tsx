@@ -1,7 +1,11 @@
 import Link from "next/link";
-import { LayoutDashboard, Star, Archive, Trash2, Folder } from "lucide-react";
+import { LayoutDashboard, Star, Archive, Trash2, Folder, Plus } from "lucide-react";
 import { collectionsAtom, currentUserAtom, selectedCollectionIdAtom, sidebarOpenAtom } from "../atoms";
 import { useAtom, useAtomValue } from "jotai";
+import { useState } from 'react';
+import { toast } from "sonner";
+import { getCollectionsWithNoteCount, renameCollection, createCollection } from "@/lib/orm";
+import { Collection } from "../types";
 
 interface SidebarItemProps {
     icon: React.ElementType;
@@ -12,10 +16,6 @@ interface SidebarItemProps {
     onClick?: () => void;
     selected?: boolean;
 }
-import { useState } from 'react';
-import { toast } from "sonner";
-import { getCollectionsWithNoteCount, renameCollection } from "@/lib/orm";
-import { Collection } from "../types";
 
 const SidebarItem = ({ icon: Icon, label, count, href = "#", onClick, selected, onRename }: SidebarItemProps) => {
     const [isEditing, setIsEditing] = useState(true);
@@ -69,20 +69,53 @@ const Sidebar = () => {
     const sidebarOpen = useAtomValue(sidebarOpenAtom);
     const [currentUser, setCurrentUser] = useAtom(currentUserAtom);
 
+    const handleAddCollection = async () => {
+        try {
+            if (currentUser) {
+                await createCollection("New collection", "New collection description", currentUser.id);
+                toast.success("New collection created");
+                
+                // Refresh collections
+                const userCollections = await getCollectionsWithNoteCount(currentUser.id);
+                setCollections(userCollections as unknown as Collection[]);
+            }
+        } catch (error) {
+            toast.error(`Error creating new collection: ${error}`);
+        }
+    };
+
     return (
         <div className={`shrink-0 ${!sidebarOpen && "fixed"} h-full overflow-y-auto bg-gray-50 dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 p-2`}>
             <div className="">
                 <SidebarItem icon={LayoutDashboard} label="Dashboard" href="/dashboard" />
             </div>
             <div className="mt-8">
-                <h3 className="px-4 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Tests</h3>
+                <div className="px-4 flex justify-between items-center">
+                    <h3 className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Tests</h3>
+                    <button
+                        onClick={handleAddCollection}
+                        className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+                        title="Add new collection"
+                    >
+                        <Plus size={16} />
+                    </button>
+                </div>
                 <div className="mt-2 ">
                     <SidebarItem icon={Trash2} label="Test dialog" count={12} href="/test/dialog" />
                     <SidebarItem icon={Trash2} label="Test database" count={12} href="/test/database" />
                 </div>
             </div>
             <div className="mt-8">
-                <h3 className="px-4 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Vault</h3>
+                <div className="px-4 flex justify-between items-center">
+                    <h3 className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Vault</h3>
+                    <button
+                        onClick={handleAddCollection}
+                        className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+                        title="Add new collection"
+                    >
+                        <Plus size={16} />
+                    </button>
+                </div>
                 <div className="mt-2 ">
                     {collections.map((collection) => (
                         <SidebarItem
@@ -90,17 +123,16 @@ const Sidebar = () => {
                             icon={Folder}
                             onRename={async (newLabel) => {
                                 try {
-                                    renameCollection(collection.id, newLabel)
-                                    toast.success(`Renamed collection to ${newLabel}`)
+                                    await renameCollection(collection.id, newLabel);
+                                    toast.success(`Renamed collection to ${newLabel}`);
 
-                                    // refresh collections
+                                    // Refresh collections
                                     if (currentUser) {
-                                        const userCollections = await getCollectionsWithNoteCount(currentUser?.id!);
-                                        console.log("collections", userCollections);
+                                        const userCollections = await getCollectionsWithNoteCount(currentUser.id);
                                         setCollections(userCollections as unknown as Collection[]);
                                     }
                                 } catch (error) {
-                                    toast.error(`Error renaming collection: ${error}`)
+                                    toast.error(`Error renaming collection: ${error}`);
                                 }
                             }}
                             selected={collection.id === selectedCollectionId}
