@@ -1,7 +1,14 @@
 
+# Wordy - A Simple Text Editor
+
+Light Mode
+
 ![Screenshot of the App](./docs/screenshot2.png)
 
-# Wordy - A Simple Text Editor
+Dark Mode (also in Zen Mode)
+
+![Dark Mode](./docs/dark-mode.png)
+
 
 ## Taglines
 - **Write with Ease, Publish with Confidence**
@@ -18,3 +25,5 @@ Our text editor is designed to simplify the writing process, making it easier fo
 - **Track Views**: Monitor the performance of your published content with built-in view tracking. See how your audience is engaging with your work.
 
 Experience a new level of writing efficiency and creativity with our text editor. Start writing today and see the difference!
+
+## Screenshots
