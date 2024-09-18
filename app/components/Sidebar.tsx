@@ -89,21 +89,10 @@ const Sidebar = () => {
             <div className="">
                 <SidebarItem icon={LayoutDashboard} label="Dashboard" href="/dashboard" />
             </div>
-            <div className="mt-8">
-                <div className="px-4 flex justify-between items-center">
-                    <h3 className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Tests</h3>
-                    <button
-                        onClick={handleAddCollection}
-                        className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
-                        title="Add new collection"
-                    >
-                        <Plus size={16} />
-                    </button>
-                </div>
-                <div className="mt-2 ">
-                    <SidebarItem icon={Trash2} label="Test dialog" count={12} href="/test/dialog" />
-                    <SidebarItem icon={Trash2} label="Test database" count={12} href="/test/database" />
-                </div>
+            <div className="mt-4">
+                <SidebarItem icon={Archive} label="Archived" href="/archived" />
+                <SidebarItem icon={Star} label="Starred" href="/starred" />
+                <SidebarItem icon={Trash2} label="Deleted" href="/deleted" />
             </div>
             <div className="mt-8">
                 <div className="px-4 flex justify-between items-center">
