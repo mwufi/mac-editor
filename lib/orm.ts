@@ -119,12 +119,23 @@ export async function getCollectionsWithNoteCount(userId: string): Promise<Colle
 }
 
 export async function getNotesInCollection(collectionId: string) {
-  return await db.query.NotesCollections.findMany({
+  const notes = await db.query.NotesCollections.findMany({
     where: eq(NotesCollections.collection_id, parseInt(collectionId)),
     with: {
       note: true
     }
-  }).then(results => results.map(result => result.note));
+  })
+  return notes.map(result => result.note).sort((a, b) => {
+    if (a.updated_at && b.updated_at) {
+      return new Date(b.updated_at).getTime() - new Date(a.updated_at).getTime();
+    } else if (a.updated_at) {
+      return 1;
+    } else if (b.updated_at) {
+      return -1;
+    } else {
+      return 0;
+    }
+  });
 }
 
 export async function addUser(name: string, handle: string, email: string) {
