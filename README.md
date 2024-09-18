@@ -1,14 +1,7 @@
 
 # Wordy - A Simple Text Editor
 
-Light Mode
-
 ![Screenshot of the App](./docs/screenshot2.png)
-
-Dark Mode (also in Zen Mode)
-
-![Dark Mode](./docs/dark-mode.png)
-
 
 ## Taglines
 - **Write with Ease, Publish with Confidence**
@@ -26,4 +19,29 @@ Our text editor is designed to simplify the writing process, making it easier fo
 
 Experience a new level of writing efficiency and creativity with our text editor. Start writing today and see the difference!
 
-## Screenshots
+## 🎉 New Features 🎉 (This week)
+
+Dark Mode (also in Zen Mode)
+
+![Dark Mode](./docs/dark-mode.png)
+
+## 🚧 Roadmap 🚧
+
+Making a notes app is fun, but there's a lot to do! Slow and steady... and welcoming any help!
+
+I don't have an official contributions guide, but just gonna write about where I see this going! (pretty soon, this will be a link to a page I maintain in the app!)
+
+- Publishing - One goal of this app is to make publishing as easy as possible. Right now, I'm imagining:
+  - Write the post
+  - Click "share"
+  - Get a link
+  - ???
+  - Profit. Or, a beautiful self-designed page on your website.
+
+- Collaborative editing - Right now, all the docs are stored in SQLite. What's the best way to support a local-first, but still cloud-enabled workflow?
+
+- Exporting - Right now, zero options. Theoretically, it should be easy to export markdown, HTML, PDF, etc.
+
+- Note organization - A whole rabbit hole. Should we have two-layer hierarchies? I like the idea of scrivener, so that could be fun to make.
+
+- TipTap improvements - Some bugs related to font. Help appreciated!
