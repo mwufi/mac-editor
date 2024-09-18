@@ -69,12 +69,18 @@ const Sidebar = () => {
     const sidebarOpen = useAtomValue(sidebarOpenAtom);
     const [currentUser, setCurrentUser] = useAtom(currentUserAtom);
 
+    const specialCollections = [
+        { name: 'Archived', icon: Archive, collection: collections.filter(collection => collection.name === 'Archived') },
+        { name: 'Starred', icon: Star, collection: collections.filter(collection => collection.name === 'Starred') },
+        { name: 'Deleted', icon: Trash2, collection: collections.filter(collection => collection.name === 'Deleted') },
+    ];
+
     const handleAddCollection = async () => {
         try {
             if (currentUser) {
                 await createCollection("New collection", "New collection description", currentUser.id);
                 toast.success("New collection created");
-                
+
                 // Refresh collections
                 const userCollections = await getCollectionsWithNoteCount(currentUser.id);
                 setCollections(userCollections as unknown as Collection[]);
@@ -90,9 +96,31 @@ const Sidebar = () => {
                 <SidebarItem icon={LayoutDashboard} label="Dashboard" href="/dashboard" />
             </div>
             <div className="mt-4">
-                <SidebarItem icon={Archive} label="Archived" href="/archived" />
-                <SidebarItem icon={Star} label="Starred" href="/starred" />
-                <SidebarItem icon={Trash2} label="Deleted" href="/deleted" />
+                {specialCollections.map((collection) => (
+                    <SidebarItem
+                        key={collection.collection[0].id}
+                        icon={collection.icon}
+                        label={collection.name}
+                        selected={collection.collection[0].id === selectedCollectionId}
+                        onClick={() => setSelectedCollectionId(collection.collection[0].id)}
+                    />
+                ))}
+            </div>
+            <div className="mt-8">
+                <div className="px-4 flex justify-between items-center">
+                    <h3 className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Tests</h3>
+                    <button
+                        onClick={handleAddCollection}
+                        className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+                        title="Add new collection"
+                    >
+                        <Plus size={16} />
+                    </button>
+                </div>
+                <div className="mt-2 ">
+                    <SidebarItem icon={Trash2} label="Test dialog" count={12} href="/test/dialog" />
+                    <SidebarItem icon={Trash2} label="Test database" count={12} href="/test/database" />
+                </div>
             </div>
             <div className="mt-8">
                 <div className="px-4 flex justify-between items-center">
@@ -106,30 +134,32 @@ const Sidebar = () => {
                     </button>
                 </div>
                 <div className="mt-2 ">
-                    {collections.map((collection) => (
-                        <SidebarItem
-                            key={collection.id}
-                            icon={Folder}
-                            onRename={async (newLabel) => {
-                                try {
-                                    await renameCollection(collection.id, newLabel);
-                                    toast.success(`Renamed collection to ${newLabel}`);
+                    {collections
+                        .filter(collection => !specialCollections.some(sc => sc.name === collection.name))
+                        .map((collection) => (
+                            <SidebarItem
+                                key={collection.id}
+                                icon={Folder}
+                                onRename={async (newLabel) => {
+                                    try {
+                                        await renameCollection(collection.id, newLabel);
+                                        toast.success(`Renamed collection to ${newLabel}`);
 
-                                    // Refresh collections
-                                    if (currentUser) {
-                                        const userCollections = await getCollectionsWithNoteCount(currentUser.id);
-                                        setCollections(userCollections as unknown as Collection[]);
+                                        // Refresh collections
+                                        if (currentUser) {
+                                            const userCollections = await getCollectionsWithNoteCount(currentUser.id);
+                                            setCollections(userCollections as unknown as Collection[]);
+                                        }
+                                    } catch (error) {
+                                        toast.error(`Error renaming collection: ${error}`);
                                     }
-                                } catch (error) {
-                                    toast.error(`Error renaming collection: ${error}`);
-                                }
-                            }}
-                            selected={collection.id === selectedCollectionId}
-                            label={collection.name}
-                            count={collection.note_count}
-                            onClick={() => setSelectedCollectionId(collection.id)}
-                        />
-                    ))}
+                                }}
+                                selected={collection.id === selectedCollectionId}
+                                label={collection.name}
+                                count={collection.note_count}
+                                onClick={() => setSelectedCollectionId(collection.id)}
+                            />
+                        ))}
                 </div>
             </div>
         </div>
