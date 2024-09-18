@@ -15,7 +15,7 @@ function getSelectionChain(editor: Editor) {
 }
 
 const ButtonGroup = ({ children }: { children: React.ReactNode }) => (
-    <div className="flex shadow border border-input rounded-md h-8 items-center overflow-hidden">
+    <div className="flex shadow rounded-md h-8 items-center overflow-hidden">
         {children}
     </div>
 );
@@ -66,7 +66,7 @@ export default function Toolbar() {
                     setFontFamily(value);
                     getSelectionChain(editor).setFontFamily(value).run();
                 }}>
-                    <SelectTrigger className="w-[150px] h-8 text-xs">
+                    <SelectTrigger className="w-[150px] h-8 text-xs border-none">
                         <SelectValue placeholder="Select a font" />
                     </SelectTrigger>
                     <SelectContent>
@@ -176,28 +176,8 @@ export default function Toolbar() {
             </ButtonGroup>
             <Button
                 variant="outline"
-                size="icon"
-                onClick={() => {
-                    // Implement image upload logic here
-                }}
-                aria-label="Add image"
-            >
-                <Image size={16} />
-            </Button>
-            <Button
-                variant="outline"
-                size="icon"
-                onClick={() => {
-                    // Implement attachment logic here
-                }}
-                aria-label="Add attachment"
-            >
-                <Paperclip size={16} />
-            </Button>
-            <Button
-                variant="outline"
                 size="sm"
-                className="shrink-0 w-16 text-xs flex items-center justify-center gap-1"
+                className="shrink-0 w-16 text-xs flex items-center justify-center gap-1 ml-auto border-none"
                 onClick={() => {
                     // Implement share logic here
                 }}

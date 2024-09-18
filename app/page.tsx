@@ -19,6 +19,7 @@ import Toolbar from './components/editor/Toolbar';
 export default function Layout() {
   // TODO: if you use atom value, it doesn't re-render properly!! something with motion.div
   const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [zenMode, setZenMode] = useState(false);
   const [currentUser, setCurrentUser] = useAtom(currentUserAtom);
   const [collections, setCollections] = useAtom(collectionsAtom);
   const setSelectedCollectionId = useSetAtom(selectedCollectionIdAtom);
@@ -78,36 +79,38 @@ export default function Layout() {
 
       <div className="flex flex-col flex-grow">
         <div className="flex-grow flex overflow-hidden">
-          <motion.div
-            layout
-            className="w-[300px] bg-white overflow-y-auto flex flex-col"
-            transition={{ duration: 0.3 }}
-          >
-            <HeaderToolbar className={sidebarOpen ? "" : "pl-20"}>
-              <div className="flex space-x-2 items-center">
-                {!sidebarOpen && (
-                  <Button
-                    onClick={toggleSidebar}
-                    variant="outline"
-                    size="icon"
-                    className="h-8 w-8"
-                  >
-                    <ChevronRight size={16} />
-                  </Button>
-                )}
-                <CreateNoteButton />
-                <TrashNoteButton />
-              </div>
-            </HeaderToolbar>
-            <NotesList />
-          </motion.div>
-
+          {!zenMode && (
+            <motion.div
+              layout
+              className="w-[300px] bg-white overflow-y-auto flex flex-col"
+              transition={{ duration: 0.3 }}
+            >
+              <HeaderToolbar className={sidebarOpen ? "" : "pl-20"}>
+                <div className="flex space-x-2 items-center">
+                  {!sidebarOpen && (
+                    <Button
+                      onClick={toggleSidebar}
+                      variant="outline"
+                      size="icon"
+                      className="h-8 w-8"
+                    >
+                      <ChevronRight size={16} />
+                    </Button>
+                  )}
+                  <CreateNoteButton />
+                  <TrashNoteButton />
+                </div>
+              </HeaderToolbar>
+              <NotesList />
+            </motion.div>
+          )}
           <motion.div
             layout
             className="flex-1 overflow-y-auto flex flex-col bg-background"
             transition={{ duration: 0.3 }}
           >
             <HeaderToolbar className={sidebarOpen ? "" : "pl-20"}>
+              {!sidebarOpen && <Button onClick={() => setZenMode(!zenMode)} className="mr-4">Zen</Button>}
               <Toolbar />
             </HeaderToolbar>
             <div className="mt-4"></div>
