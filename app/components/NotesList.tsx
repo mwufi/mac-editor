@@ -97,7 +97,7 @@ const NotesList = () => {
             </div>
             <motion.div className="overflow-y-auto h-[calc(100%-6rem)]" layout>
                 <div className="py-2 px-4 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase">
-                    {selectedCollectionId ? `${selectedCollection?.name} Notes` : 'Notes'}
+                    {selectedCollectionId ? `${selectedCollection?.name}` : 'Notes'}
                 </div>
                 <AnimatePresence>
                     {notes.map((note) => (

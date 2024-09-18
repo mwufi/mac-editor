@@ -96,7 +96,7 @@ const Sidebar = () => {
                 <SidebarItem icon={LayoutDashboard} label="Dashboard" href="/dashboard" />
             </div>
             <div className="mt-4">
-                {specialCollections.map((collection) => (
+                {specialCollections.map((collection) => (collection.collection.length > 0 &&
                     <SidebarItem
                         key={collection.collection[0].id}
                         icon={collection.icon}

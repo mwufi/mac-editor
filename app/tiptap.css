@@ -26,7 +26,7 @@
     margin-block-start: 1em;
 }
 
-.tiptap > p {
+.tiptap>p {
     @apply leading-relaxed;
     margin-block-start: var(--paragraph-spacing);
     margin-block-end: var(--paragraph-spacing);
@@ -43,7 +43,8 @@
 .tiptap li {
     @apply my-[var(--item-spacing)];
 }
-.tiptap li::marker{
+
+.tiptap li::marker {
     @apply text-lg;
 }
 
@@ -69,4 +70,35 @@
     float: left;
     height: 0;
     pointer-events: none;
+}
+
+
+/* task list */
+ul[data-type="taskList"] {
+    @apply mx-0 py-0 px-1;
+}
+
+ul[data-type="taskList"] li {
+    display: flex;
+    align-items: baseline;
+}
+
+ul[data-type="taskList"] li input[type="checkbox"] {
+    @apply w-5 h-5;
+    transform: translateY(5px);
+    /* Slightly lower the position of the task list items */
+    accent-color: var(--primary);
+    /* Display primary color when checked */
+}
+
+ul[data-type="taskList"] li label {
+    display: flex;
+    align-items: center;
+    /* Center the checkbox and label text vertically */
+}
+
+ul[data-type="taskList"] li div {
+    @apply pl-2;
+    flex-grow: 1;
+    /* Allow the text to take the remaining space */
 }
