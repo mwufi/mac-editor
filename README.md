@@ -1,9 +1,10 @@
 
 # Wordy - A Simple Text Editor
 
-<div style="border:1px solid blue; background: #aaa; border-radius: 3px; padding: 1em;">
+<p style="border:1px solid blue; background: #aaa; border-radius: 3px; padding: 1em;">
 Hey! For anyone coming from HN, you can run the editor by cloning the repo & running `bun run tauri dev`. Try it out!
-</div>
+</p>
+
 
 ![Screenshot of the App](./docs/screenshot2.png)
 
