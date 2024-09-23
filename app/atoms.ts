@@ -59,3 +59,4 @@ export const currentUserAtom = atom<User | null>(null);
 // UI
 export const sidebarOpenAtom = atom(true); // Default to open
 export const showPageAtom = atom(false);
+export const zenModeAtom = atom(false);

@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import Sidebar from '@/app/components/Sidebar';
 import { Collection } from '@/app/types';
 import { getCurrentUser, getCollectionsWithNoteCount } from '@/lib/orm';
-import { currentUserAtom, collectionsAtom, selectedCollectionIdAtom } from '@/app/atoms';
+import { currentUserAtom, collectionsAtom, selectedCollectionIdAtom, zenModeAtom } from '@/app/atoms';
 import { useAtom, useSetAtom } from 'jotai';
 import NotesList from '@/app/components/NotesList';
 import Editor from '@/app/components/Editor';
@@ -19,7 +19,7 @@ import Toolbar from './components/editor/EditorToolbar';
 export default function Layout() {
   // TODO: if you use atom value, it doesn't re-render properly!! something with motion.div
   const [sidebarOpen, setSidebarOpen] = useState(true);
-  const [zenMode, setZenMode] = useState(false);
+  const [zenMode, setZenMode] = useAtom(zenModeAtom);
   const [currentUser, setCurrentUser] = useAtom(currentUserAtom);
   const [collections, setCollections] = useAtom(collectionsAtom);
   const setSelectedCollectionId = useSetAtom(selectedCollectionIdAtom);
