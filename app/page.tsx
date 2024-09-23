@@ -14,7 +14,7 @@ import Editor from '@/app/components/Editor';
 import HeaderToolbar from '@/app/components/toolbars/HeaderToolbar';
 import CreateNoteButton from '@/app/components/toolbars/CreateNoteButton';
 import TrashNoteButton from '@/app/components/toolbars/TrashNoteButton';
-import Toolbar from './components/editor/Toolbar';
+import Toolbar from './components/editor/EditorToolbar';
 
 export default function Layout() {
   // TODO: if you use atom value, it doesn't re-render properly!! something with motion.div

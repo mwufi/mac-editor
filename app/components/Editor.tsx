@@ -6,6 +6,7 @@ import TipTapEditor from "./editor/TipTapEditor";
 import { useEffect, useCallback, useMemo, useState } from "react";
 import { saveNoteContent } from "@/lib/orm";
 import { useDebounce } from "@/app/hooks/useDebounce";
+import { showPageAtom } from "../atoms";
 
 const Editor = () => {
     const selectedNote = useAtomValue(selectedNoteAtom);
@@ -16,6 +17,7 @@ const Editor = () => {
     const [currentContent, setCurrentContent] = useAtom(currentContentAtom);
     const [lastSavedContent, setLastSavedContent] = useAtom(lastSavedContentAtom);
     const editor = useAtomValue(editorAtom);
+    const showPage = useAtomValue(showPageAtom);
     const [latest, setLatest] = useState<string | null>(null);
 
     const saveContent = useCallback(async (contentAsHtml: string, contentAsText: string) => {
@@ -65,7 +67,7 @@ const Editor = () => {
         }
 
         return (
-            <div className="flex-1 h-full bg-background dark:bg-gray-900 px-8 overflow-y-auto shadow-lg rounded-lg w-[820px] mx-auto">
+            <div className={`flex-1 h-full bg-background dark:bg-gray-900 px-8 overflow-y-auto rounded-lg w-[820px] mx-auto ${showPage ? "shadow-lg" : ""}`}>
                 <div className="p-8">
                     <TipTapEditor onUpdate={handleUpdate} initialContent={initialContent} />
                 </div>

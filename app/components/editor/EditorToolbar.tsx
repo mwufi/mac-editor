@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import { Toggle } from "@/components/ui/toggle";
-import { Bold, Italic, Underline, Strikethrough, Image, AlignLeft, AlignCenter, AlignRight, Paperclip, Share, Type } from "lucide-react";
+import { Bold, Italic, Underline, Strikethrough, Image, AlignLeft, AlignCenter, AlignRight, Paperclip, Share, Type, Settings } from "lucide-react";
 import { Editor } from "@tiptap/react";
 
 function getSelectionChain(editor: Editor) {
@@ -20,7 +20,7 @@ const ButtonGroup = ({ children }: { children: React.ReactNode }) => (
     </div>
 );
 
-export default function Toolbar() {
+export default function EditorToolbar() {
     const editor = useAtomValue(editorAtom);
     const [fontSize, setFontSize] = useState('16');
     const [fontFamily, setFontFamily] = useState('');
@@ -36,7 +36,7 @@ export default function Toolbar() {
         const updateToolbar = () => {
             const attrs = editor.getAttributes('textStyle');
             setFontSize(attrs.fontSize ? attrs.fontSize.replace('pt', '') : '16');
-            setFontFamily(attrs.fontFamily || 'Inter');
+            setFontFamily(attrs.fontFamily || 'EB Garamond');
             if (attrs.fontFamily) {
                 console.log("font family", attrs.fontFamily);
             }
@@ -70,13 +70,12 @@ export default function Toolbar() {
                         <SelectValue placeholder="Select a font" />
                     </SelectTrigger>
                     <SelectContent>
-                        <SelectItem value="Inter">Inter</SelectItem>
+                        <SelectItem value="EB Garamond">EB Garamond</SelectItem>
                         <SelectItem value="Comic Sans MS, Comic Sans">Comic Sans</SelectItem>
                         <SelectItem value="serif">Serif</SelectItem>
                         <SelectItem value="monospace">Monospace</SelectItem>
                         <SelectItem value="cursive">Cursive</SelectItem>
-                        <SelectItem value="var(--title-font-family)">CSS variable</SelectItem>
-                        <SelectItem value='"Comic Sans MS", "Comic Sans"'>Comic Sans quoted</SelectItem>
+                        <SelectItem value="var(--title-font-family)">Title</SelectItem>
                     </SelectContent>
                 </Select>
             </ButtonGroup>
@@ -174,6 +173,17 @@ export default function Toolbar() {
                     <AlignRight size={16} />
                 </Toggle>
             </ButtonGroup>
+            <Button
+                variant="outline"
+                size="sm"
+                className="shrink-0 w-16 text-xs flex items-center justify-center gap-1 ml-2 border-none"
+                onClick={() => {
+                    // Implement settings logic here
+                }}
+                aria-label="Settings"
+            >
+                <Settings size={16} />
+            </Button>
             <Button
                 variant="outline"
                 size="sm"
