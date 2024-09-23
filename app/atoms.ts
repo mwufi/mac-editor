@@ -1,6 +1,6 @@
 import { atom } from "jotai";
 import { Note, User, Collection } from "./types";
-import { Editor } from "@tiptap/react";
+import { Editor, JSONContent } from "@tiptap/react";
 
 export const collectionsAtom = atom<Collection[]>([]);
 export const selectedCollectionIdAtom = atom<string | null>(null);
@@ -46,7 +46,7 @@ export const updateTitleAtom = atom(null, (get, set, update: string) => {
   set(collectionNotesAtom, updatedNotes as Note[]);
 });
 
-export const currentContentAtom = atom<string | null>(null);
+export const currentContentAtom = atom<JSONContent | string |null>(null);
 
 export const lastSavedContentAtom = atom<string | null>(null);
 

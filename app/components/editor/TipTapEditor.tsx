@@ -14,7 +14,6 @@ import TaskList from '@tiptap/extension-task-list'
 import NextImageNode from '@/components/editor/nodes/NextImageNode'
 import FontFamily from '@tiptap/extension-font-family';
 import TextStyle from '@tiptap/extension-text-style'
-import FontSize from 'tiptap-extension-font-size'
 import Underline from '@tiptap/extension-underline'
 import TextAlign from '@tiptap/extension-text-align'
 import Document from '@tiptap/extension-document'
@@ -58,7 +57,6 @@ const TipTapEditor: React.FC<TipTapEditorProps> = ({ onUpdate, initialContent })
             TaskItem.configure({
                 nested: true,
             }),
-            FontSize,
             TextStyle,
             FontFamily.configure({
                 types: ['textStyle'],
@@ -164,7 +162,7 @@ async function uploadAndInsertImage(editor: Editor, file: File) {
             },
         ]).focus().run()
     } catch (error) {
-        toast.error('Error uploading image:', error.message);
+        toast.error('Error uploading image:' + (error instanceof Error ? error.message : 'Unknown error'));
     }
 }
 

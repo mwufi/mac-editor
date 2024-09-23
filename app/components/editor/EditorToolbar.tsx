@@ -84,7 +84,7 @@ export default function EditorToolbar() {
                     onClick={() => {
                         const newSize = Math.max(8, parseInt(fontSize) - 1);
                         setFontSize(newSize.toString());
-                        editor.chain().focus().setFontSize(`${newSize}pt`).run();
+                        // editor.chain().focus().setFontSize(`${newSize}pt`).run();
                     }}
                     className="h-4 w-6 text-xs font-medium flex items-center justify-center"
                 >
@@ -97,7 +97,7 @@ export default function EditorToolbar() {
                         const newSize = e.target.value.replace(/[^0-9]/g, '');
                         setFontSize(newSize);
                         if (parseInt(newSize) >= 10 && parseInt(newSize) <= 72) {
-                            editor.chain().focus().setFontSize(`${newSize}pt`).run();
+                            // editor.chain().focus().setFontSize(`${newSize}pt`).run();
                         }
                     }}
                     className="w-6 text-xs font-medium text-center rounded h-4"
@@ -106,7 +106,7 @@ export default function EditorToolbar() {
                     onClick={() => {
                         const newSize = Math.min(72, parseInt(fontSize) + 1);
                         setFontSize(newSize.toString());
-                        getSelectionChain(editor).setFontSize(`${newSize}pt`).run();
+                        // getSelectionChain(editor).setFontSize(`${newSize}pt`).run();
                     }}
                     className="h-4 w-6 text-xs flex items-center justify-center"
                 >

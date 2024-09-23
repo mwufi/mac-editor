@@ -7,6 +7,7 @@ import { useEffect, useCallback, useMemo, useState } from "react";
 import { saveNoteContent } from "@/lib/orm";
 import { useDebounce } from "@/app/hooks/useDebounce";
 import { showPageAtom } from "../atoms";
+import { JSONContent } from "@tiptap/react";
 
 const Editor = () => {
     const selectedNote = useAtomValue(selectedNoteAtom);
@@ -20,9 +21,11 @@ const Editor = () => {
     const showPage = useAtomValue(showPageAtom);
     const [latest, setLatest] = useState<string | null>(null);
 
-    const saveContent = useCallback(async (contentAsHtml: string, contentAsText: string) => {
+    const saveContent = useCallback(async (contentJSON: JSONContent | string, contentAsText: string) => {
         const currentSelectedNoteId = selectedNoteId; // Get the latest selectedNoteId
         setLatest(currentSelectedNoteId);
+
+        const contentAsString = typeof contentJSON === 'string' ? contentJSON : JSON.stringify(contentJSON);
 
         // Extract the first line as the title
         const lines = contentAsText.split('\n');
@@ -30,9 +33,9 @@ const Editor = () => {
         updateSelectedNoteTitle(newTitle);
 
         if (currentSelectedNoteId) {
-            await saveNoteContent(currentSelectedNoteId, contentAsHtml, newTitle);
-            setLastSavedContent(contentAsHtml);
-            updateSelectedNoteContent(contentAsHtml);
+            await saveNoteContent(currentSelectedNoteId, contentAsString, newTitle);
+            setLastSavedContent(contentAsString);
+            updateSelectedNoteContent(contentAsString);
         } else {
             console.error("No selected note");
         }
@@ -40,9 +43,9 @@ const Editor = () => {
 
     const debouncedSave = useDebounce(saveContent, 300);
 
-    const handleUpdate = useCallback((contentAsHtml: string, contentAsText: string) => {
-        setCurrentContent(contentAsHtml);
-        debouncedSave(contentAsHtml, contentAsText);
+    const handleUpdate = useCallback((jsonContent: JSONContent, contentAsText: string) => {
+        setCurrentContent(jsonContent);
+        debouncedSave(jsonContent, contentAsText);
     }, [debouncedSave, setCurrentContent]);
 
     useEffect(() => {
