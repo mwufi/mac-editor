@@ -120,6 +120,7 @@ const Sidebar = () => {
                 <div className="mt-2 ">
                     <SidebarItem icon={Trash2} label="Test dialog" count={12} href="/test/dialog" />
                     <SidebarItem icon={Trash2} label="Test database" count={12} href="/test/database" />
+                    <SidebarItem icon={Trash2} label="Blog Preview" count={12} href="/test/preview" />
                 </div>
             </div>
             <div className="mt-8">
