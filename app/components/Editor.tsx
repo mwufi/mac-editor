@@ -69,8 +69,8 @@ const Editor = () => {
         }
 
         return (
-            <div className={`flex-1 h-full relative bg-background dark:bg-gray-900 px-8 overflow-y-auto rounded-lg w-[820px] mx-auto ${showPage ? "shadow-lg" : ""}`}>
-                <div className="p-8">
+            <div className={`flex-1 h-[calc(100vh-100px)] flex flex-col relative bg-background dark:bg-gray-900 px-8 rounded-lg w-[820px] mx-auto ${showPage ? "shadow-lg" : ""}`}>
+                <div className="p-8 mb-4 overflow-y-auto flex-1">
                     <TipTapEditor onUpdate={handleUpdate} initialContent={initialContent} />
                 </div>
                 <div className="fixed bottom-4 right-4 flex items-center space-x-2">
@@ -86,7 +86,7 @@ const Editor = () => {
                         </div>
                     )}
                 </div>
-                <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2">
+                <div className="sticky bottom-2 grid place-items-center">
                     <span className="text-xs text-gray-500">{characterCount.words} words</span>
                 </div>
             </div>
