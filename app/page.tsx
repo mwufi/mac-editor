@@ -111,7 +111,7 @@ export default function Layout() {
           >
             <HeaderToolbar className={sidebarOpen ? "" : "pl-20"}>
               {!sidebarOpen && <Button onClick={() => setZenMode(!zenMode)} className="mr-4">Zen</Button>}
-              <Toolbar />
+              {!zenMode && <Toolbar />}
             </HeaderToolbar>
             <div className="mt-4"></div>
             <Editor />

@@ -36,7 +36,7 @@ const NoteItem = ({ title, date, summary, image, onClick, isSelected }: NoteItem
             )}
         </AnimatePresence>
         <div className="z-10">
-            <h3 className={`text-sm font-medium ${isSelected ? 'text-accent-foreground' : 'text-gray-800 dark:text-gray-200 group-hover:text-gray-900 dark:group-hover:text-gray-100'}`}>{title}</h3>
+            <h3 className={`text-sm font-medium ${isSelected ? 'text-accent-foreground' : 'text-gray-800 dark:text-gray-200 group-hover:text-gray-900 dark:group-hover:text-gray-100'}`}>{title.substring(0, 35)}</h3>
             <p className={`text-xs ${isSelected ? 'text-accent-foreground' : 'text-gray-600 dark:text-gray-400 group-hover:text-gray-700 dark:group-hover:text-gray-300'}`}>{date}</p>
             <p className={`text-xs ${isSelected ? 'text-accent-foreground' : 'text-gray-600 dark:text-gray-400 group-hover:text-gray-700 dark:group-hover:text-gray-300'}`}>{summary}</p>
         </div>

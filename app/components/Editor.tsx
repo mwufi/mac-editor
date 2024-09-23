@@ -1,7 +1,7 @@
 "use client";
 
 import { useAtom, useAtomValue, useSetAtom } from "jotai";
-import { editorAtom, lastSavedContentAtom, selectedNoteAtom, currentContentAtom, updateContentAtom, updateTitleAtom, initialContentAtom, selectedNoteIdAtom } from "../atoms";
+import { editorAtom, lastSavedContentAtom, selectedNoteAtom, currentContentAtom, updateContentAtom, updateTitleAtom, initialContentAtom, selectedNoteIdAtom, characterCountAtom } from "../atoms";
 import TipTapEditor from "./editor/TipTapEditor";
 import { useEffect, useCallback, useMemo, useState } from "react";
 import { saveNoteContent } from "@/lib/orm";
@@ -60,6 +60,8 @@ const Editor = () => {
         }
     }, [editor, setCurrentContent, setLastSavedContent, initialContent]);
 
+    const characterCount = useAtomValue(characterCountAtom);
+
     const editorContent = useMemo(() => {
         if (!selectedNote) {
             return <div className="flex-1 h-full w-full grid place-items-center dark:bg-gray-900 px-8 overflow-y-auto">No note selected
@@ -67,7 +69,7 @@ const Editor = () => {
         }
 
         return (
-            <div className={`flex-1 h-full bg-background dark:bg-gray-900 px-8 overflow-y-auto rounded-lg w-[820px] mx-auto ${showPage ? "shadow-lg" : ""}`}>
+            <div className={`flex-1 h-full relative bg-background dark:bg-gray-900 px-8 overflow-y-auto rounded-lg w-[820px] mx-auto ${showPage ? "shadow-lg" : ""}`}>
                 <div className="p-8">
                     <TipTapEditor onUpdate={handleUpdate} initialContent={initialContent} />
                 </div>
@@ -83,6 +85,9 @@ const Editor = () => {
                             <span className="text-xs text-gray-500">Writing...</span>
                         </div>
                     )}
+                </div>
+                <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2">
+                    <span className="text-xs text-gray-500">{characterCount.words} words</span>
                 </div>
             </div>
         );

@@ -21,8 +21,8 @@ import Document from '@tiptap/extension-document'
 import FileHandler from '@/components/editor/extensions/FileHandler';
 import CalculatorExtension from '@/components/editor/extensions/CalculatorExtension';
 
-import { useAtom } from 'jotai';
-import { editorAtom } from '@/app/atoms';
+import { useAtom, useSetAtom } from 'jotai';
+import { editorAtom, characterCountAtom } from '@/app/atoms';
 import { toast } from 'sonner';
 import { uploadImageToLocal } from '@/components/editor/LocalFileLoader';
 
@@ -117,6 +117,7 @@ const TipTapEditor: React.FC<TipTapEditorProps> = ({ onUpdate, initialContent })
         }
     }, [editor, initialContent]);
 
+    const setCharacterCount = useSetAtom(characterCountAtom);
     useEffect(() => {
         if (editor) {
             setEditor(editor); // Set the editor in the context when it's created
@@ -125,6 +126,10 @@ const TipTapEditor: React.FC<TipTapEditorProps> = ({ onUpdate, initialContent })
                 const contentAsJSON = editor.getJSON();
                 const contentAsText = editor.getText();
                 onUpdate(contentAsJSON, contentAsText);
+                setCharacterCount({
+                    characters: editor.storage.characterCount.characters(),
+                    words: editor.storage.characterCount.words(),
+                });
             };
 
             editor.on('update', handleUpdate);

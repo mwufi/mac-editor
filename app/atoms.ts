@@ -56,6 +56,11 @@ export const dialogOpenAtom = atom(false);
 
 export const currentUserAtom = atom<User | null>(null);
 
+export const characterCountAtom = atom({
+  characters: 0,
+  words: 0,
+});
+
 // UI
 export const sidebarOpenAtom = atom(true); // Default to open
 export const showPageAtom = atom(false);
