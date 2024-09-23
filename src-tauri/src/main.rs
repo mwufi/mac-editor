@@ -77,6 +77,18 @@ fn main() {
             sql: "CREATE UNIQUE INDEX idx_unique_collection_name ON collections(name, user_id);",
             kind: MigrationKind::Up,
         },
+        Migration {
+            version: 10,
+            description: "create_chat_table",
+            sql: "CREATE TABLE chat (id INTEGER PRIMARY KEY, note_id INTEGER, created_at DATETIME DEFAULT CURRENT_TIMESTAMP, updated_at DATETIME DEFAULT CURRENT_TIMESTAMP, FOREIGN KEY(note_id) REFERENCES notes(id));",
+            kind: MigrationKind::Up,
+        },
+        Migration {
+            version: 11,
+            description: "create_chat_messages_table",
+            sql: "CREATE TABLE chat_messages (id INTEGER PRIMARY KEY, chat_id INTEGER, content TEXT, created_at DATETIME DEFAULT CURRENT_TIMESTAMP, updated_at DATETIME DEFAULT CURRENT_TIMESTAMP, sender TEXT, FOREIGN KEY(chat_id) REFERENCES chat(id));",
+            kind: MigrationKind::Up,
+        }
     ];
 
     // This is where you pass in your commands

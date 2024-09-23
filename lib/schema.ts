@@ -20,6 +20,22 @@ export const Notes = sqliteTable("notes", {
   user_id: integer("user_id").references(() => Users.id),
 });
 
+export const Chat = sqliteTable("chat", {
+  id: integer("id").primaryKey(),
+  note_id: integer("note_id").references(() => Notes.id),
+  created_at: text("created_at").default("CURRENT_TIMESTAMP"),
+  updated_at: text("updated_at").default("CURRENT_TIMESTAMP"),
+});
+
+export const ChatMessages = sqliteTable("chat_messages", {
+  id: integer("id").primaryKey(),
+  chat_id: integer("chat_id").references(() => Chat.id),
+  content: text("content"),
+  created_at: text("created_at").default("CURRENT_TIMESTAMP"),
+  updated_at: text("updated_at").default("CURRENT_TIMESTAMP"),
+  sender: text("sender"),
+});
+
 export const NoteVersions = sqliteTable("note_versions", {
   id: integer("id").primaryKey(),
   note_id: integer("note_id").references(() => Notes.id),
@@ -58,6 +74,21 @@ export const ShareLinks = sqliteTable("share_links", {
   user_id: integer("user_id").references(() => Users.id),
 });
 
+export const ChatRelations = relations(Chat, ({ many, one }) => ({
+  note: one(Notes, {
+    fields: [Chat.note_id],
+    references: [Notes.id],
+  }),
+  messages: many(ChatMessages),
+}));
+
+export const ChatMessagesRelations = relations(ChatMessages, ({ one }) => ({
+  chat: one(Chat, {
+    fields: [ChatMessages.chat_id],
+    references: [Chat.id],
+  }),
+}));
+
 export const UsersRelations = relations(Users, ({ many }) => ({
   notes: many(Notes),
   collections: many(Collections),
@@ -67,6 +98,10 @@ export const NotesRelations = relations(Notes, ({ many, one }) => ({
   collections: many(NotesCollections),
   versions: many(NoteVersions),
   shareLinks: many(ShareLinks),
+  chat: one(Chat, {
+    fields: [Notes.id],
+    references: [Chat.note_id],
+  }),
   user: one(Users, {
     fields: [Notes.user_id],
     references: [Users.id],
